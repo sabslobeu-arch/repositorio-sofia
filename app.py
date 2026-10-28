@@ -17,7 +17,7 @@ with ui.column().classes('w-full items-center justify-center py-12 px-4 gap-6'):
     ui.image('https://raw.githubusercontent.com/sabslobeu-arch/repositorio-sofia/main/logo-sofia.png').classes('w-96 max-w-lg h-auto object-contain rounded-xl shadow-md')
     
     # Título de boas-vindas
-    ui.label('Repositório Científico Sofia ').classes('text-2xl font-bold text-emerald-950 text-center')
+    ui.label('Repositório Científico Sofia Feldman').classes('text-2xl font-bold text-emerald-950 text-center')
     
     # Caixa de Pesquisa em Destaque
     with ui.card().classes('w-full max-w-2xl p-6 bg-white shadow-lg rounded-2xl border border-emerald-100 gap-4'):
