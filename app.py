@@ -1,20 +1,24 @@
 from nicegui import ui
 
+from nicegui import ui
+
 def main():
-    # Estilização global do fundo da página
     ui.query('body').style('background-color: #f8fafc;')
 
-    # --- CABEÇALHO COM LOGO/IDENTIDADE ---
+    # --- CABEÇALHO COM A LOGO HOSPEDADA NO GITHUB ---
     with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-slate-200'):
-        with ui.row().classes('items-center gap-3'):
-            # Ícone ou Imagem de Destaque (pode substituir por ui.image('logo.png'))
-            ui.icon('local_library', size='2.5rem').classes('text-blue-700')
+        with ui.row().classes('items-center gap-4'):
+            
+            # Cole aqui o link "Raw" que você copiou do GitHub
+            ui.image('https://raw.githubusercontent.com/SEU-USUARIO/SEU-REPOSITORIO/main/logo_hospital.png').classes('h-12 w-auto object-contain')
+            
             with ui.column().classes('gap-0'):
-                ui.label('Repositório Científico & Clínico').classes('text-xl font-bold text-slate-800 tracking-tight')
-                ui.label('Gestão Inteligente de Evidências e Vocabulário Controlado').classes('text-xs text-slate-500 font-medium')
+                ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-slate-800 tracking-tight')
+                ui.label('Biblioteca Virtual de Evidências Médicas').classes('text-xs text-slate-500 font-medium')
         
-        # Perfil ou Info rápida à direita
-        ui.badge('Modo Portátil (USB)', color='green').classes('text-xs px-3 py-1')
+        ui.badge('Ambiente Web Institucional', color='blue').classes('text-xs px-3 py-1')
+
+ 
 
     # --- CONTEÚDO PRINCIPAL COM ABAS ESTILIZADAS ---
     with ui.column().classes('w-full max-w-7xl mx-auto p-6 gap-6'):
