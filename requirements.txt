@@ -1,0 +1,3 @@
+nicegui
+pyinstaller
+requests
