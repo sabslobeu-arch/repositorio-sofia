@@ -8,14 +8,14 @@ ui.query('body').style('background-color: #f0fdf4;')
 with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-emerald-100'):
     with ui.row().classes('items-center gap-4'):
         # Mantemos um ícone discreto ou o nome no topo
-        ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-emerald-800 tracking-tight')
+        ui.label('Repositório Sofia').classes('text-lg font-bold text-emerald-800 tracking-tight')
     ui.badge('Online', color='green').classes('text-xs px-3 py-1')
 
 # --- ÁREA PRINCIPAL (COM A IMAGEM GRANDE E BUSCA) ---
 with ui.column().classes('w-full items-center justify-center py-12 px-4 gap-6'):
     
     # Imagem grande em destaque (substitua pelo seu link Raw do GitHub)
-    ui.image('https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/main/logo_hospital.png').classes('w-96 max-w-lg h-auto object-contain rounded-xl shadow-md')
+    ui.image('https://github.com/sabslobeu-arch/repositorio-sofia/blob/main/logo-sofia.png').classes('w-96 max-w-lg h-auto object-contain rounded-xl shadow-md')
     
     # Título de boas-vindas
     ui.label('Biblioteca Virtual de Evidências Médicas').classes('text-2xl font-bold text-emerald-950 text-center')
