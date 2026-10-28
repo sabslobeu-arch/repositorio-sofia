@@ -13,9 +13,9 @@ def main():
             
             with ui.column().classes('gap-0'):
                 ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-slate-800 tracking-tight')
-                ui.label('Biblioteca Virtual de Evidências Médicas').classes('text-xs text-slate-500 font-medium')
+                ui.label('Hospital Sofia Feldman').classes('text-xs text-slate-500 font-medium')
         
-        ui.badge('Ambiente Web Institucional', color='blue').classes('text-xs px-3 py-1')
+        ui.badge('Ambiente Web Institucional', color='green').classes('text-xs px-3 py-1')
 
  
 
