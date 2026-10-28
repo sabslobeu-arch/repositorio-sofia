@@ -1,3 +1,5 @@
 nicegui
 pyinstaller
 requests
+fastapi
+uvicorn
