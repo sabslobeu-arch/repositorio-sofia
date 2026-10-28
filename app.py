@@ -75,4 +75,6 @@ def main():
                     ui.button('Salvar no Repositório', icon='save').classes('w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl py-3 mt-2')
 
 main()
-ui.run(port=8080, native=False, reload=False)
+port = int(os.environ.get('PORT', 8080))
+
+ui.run(port=port, host='0.0.0.0', title='Repositório', reload=False)
