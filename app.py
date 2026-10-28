@@ -1,24 +1,34 @@
-import os 
-from nicegui import ui
+import os
+from nicegui import ui, app
 
-def main():
-    ui.query('body').style('background-color: #f8fafc;')
+# Configuração global de fundo (tom claro esverdeado suave)
+ui.query('body').style('background-color: #f0fdf4;')
 
-    # --- CABEÇALHO COM A LOGO HOSPEDADA NO GITHUB ---
-    with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-slate-200'):
-        with ui.row().classes('items-center gap-4'):
-            
-            # Cole aqui o link "Raw" que você copiou do GitHub
-            ui.image('https://github.com/sabslobeu-arch/repositorio-sofia/blob/main/images.jpg').classes('h-12 w-auto object-contain')
-            
-            with ui.column().classes('gap-0'):
-                ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-slate-800 tracking-tight')
-                ui.label('Hospital Sofia Feldman').classes('text-xs text-slate-500 font-medium')
+# --- CABEÇALHO ---
+with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-emerald-100'):
+    with ui.row().classes('items-center gap-4'):
+        # Mantemos um ícone discreto ou o nome no topo
+        ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-emerald-800 tracking-tight')
+    ui.badge('Online', color='green').classes('text-xs px-3 py-1')
+
+# --- ÁREA PRINCIPAL (COM A IMAGEM GRANDE E BUSCA) ---
+with ui.column().classes('w-full items-center justify-center py-12 px-4 gap-6'):
+    
+    # Imagem grande em destaque (substitua pelo seu link Raw do GitHub)
+    ui.image('https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/main/logo_hospital.png').classes('w-96 max-w-lg h-auto object-contain rounded-xl shadow-md')
+    
+    # Título de boas-vindas
+    ui.label('Biblioteca Virtual de Evidências Médicas').classes('text-2xl font-bold text-emerald-950 text-center')
+    
+    # Caixa de Pesquisa em Destaque
+    with ui.card().classes('w-full max-w-2xl p-6 bg-white shadow-lg rounded-2xl border border-emerald-100 gap-4'):
+        ui.label('Pesquisar na Base de Conhecimento').classes('font-semibold text-emerald-800 text-sm')
         
-        ui.badge('Ambiente Web Institucional', color='green').classes('text-xs px-3 py-1')
+        with ui.row().classes('w-full items-center gap-2'):
+            search_input = ui.input(placeholder='Digite termos clínicos, DOI ou palavras-chave...').classes('flex-grow')
+            ui.button('Buscar', on_click=lambda: ui.notify(f'Buscando por: {search_input.value}')).classes('bg-emerald-700 text-white hover:bg-emerald-800')
 
  
-
     # --- CONTEÚDO PRINCIPAL COM ABAS ESTILIZADAS ---
     with ui.column().classes('w-full max-w-7xl mx-auto p-6 gap-6'):
         
