@@ -1,4 +1,3 @@
-from nicegui import ui
 
 from nicegui import ui
 
@@ -10,7 +9,7 @@ def main():
         with ui.row().classes('items-center gap-4'):
             
             # Cole aqui o link "Raw" que você copiou do GitHub
-            ui.image('https://raw.githubusercontent.com/SEU-USUARIO/SEU-REPOSITORIO/main/logo_hospital.png').classes('h-12 w-auto object-contain')
+            ui.image('https://github.com/sabslobeu-arch/repositorio-sofia/blob/main/images.jpg').classes('h-12 w-auto object-contain')
             
             with ui.column().classes('gap-0'):
                 ui.label('Repositório Hospitalar & Clínico').classes('text-lg font-bold text-slate-800 tracking-tight')
