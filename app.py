@@ -27,35 +27,50 @@ with ui.column().classes('w-full items-center justify-center py-12 px-4 gap-6'):
             search_input = ui.input(placeholder='Digite termos clínicos, DOI ou palavras-chave...').classes('flex-grow')
             ui.button('Buscar', on_click=lambda: ui.notify(f'Buscando por: {search_input.value}')).classes('bg-emerald-700 text-white hover:bg-emerald-800')
 
-# --- CONTEÚDO PRINCIPAL COM ABAS ESTILIZADAS ---
-with ui.column().classes('w-full max-w-7xl mx-auto p-6 gap-6'):
-    
-    with ui.tabs().classes('w-full bg-white rounded-xl shadow-sm p-1 text-emerald-800') as tabs:
-        tab_busca = ui.tab('Acervo & Busca', icon='search').classes('rounded-lg transition')
-        tab_submissao = ui.tab('Nova Submissão', icon='upload_file').classes('rounded-lg transition')
-
-    with ui.tab_panels(tabs, value=tab_busca).classes('w-full bg-transparent'):
-        
-        # --- ABA 1: BUSCA ---
+# --- ABA 1: BUSCA ---
         with ui.tab_panel(tab_busca).classes('p-0 pt-4'):
-            with ui.row().classes('w-full gap-6'):
+            with ui.column().classes('w-full gap-6'):
                 
-                # Filtros (Esquerda)
-                with ui.card().classes('w-1/4 p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 gap-4'):
-                    ui.label('Filtros e Facetas').classes('text-base font-bold text-emerald-900')
-                    ui.separator()
-                    ui.input(label='Descritor MeSH/DeCS', placeholder='Ex: Neoplasias').classes('w-full')
-                    ui.select(label='Tipo de Documento', options=['Todos', 'Artigo Original', 'Revisão Sistemática'], value='Todos').classes('w-full')
-                    ui.button('Aplicar Filtros', icon='filter_list').classes('w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-xl shadow-sm')
+                # --------------------------------------------------------
+                # 1. BLOCO DE PESQUISA UNIFICADO
+                # --------------------------------------------------------
+                with ui.card().classes('w-full p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 gap-4'):
+                    
+                    # Linha Principal de Busca
+                    with ui.row().classes('w-full items-center gap-3 no-wrap'):
+                        busca_input = ui.input(placeholder='Busca por título, resumo ou operadores booleanos...').classes('flex-grow border-none text-base')
+                        
+                        ui.button(icon='search').classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
+                        
+                        # Lógica para mostrar/esconder filtros
+                        def toggle_filtros():
+                            area_filtros.visible = not area_filtros.visible
+                            btn_avancada.props(f'icon={"expand_less" if area_filtros.visible else "tune"}')
 
-                # Resultados (Direita)
-                with ui.column().classes('w-3/4 gap-4'):
-                    with ui.row().classes('w-full items-center gap-3 bg-white p-4 rounded-2xl shadow-sm border border-emerald-100'):
-                        ui.input(placeholder='Busca avançada por título, resumo ou operadores booleanos...').classes('flex-grow border-none')
-                        ui.button(icon='search').classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-5')
+                        btn_avancada = ui.button('Busca Avançada', icon='tune', on_click=toggle_filtros).classes('bg-emerald-50 text-emerald-900 hover:bg-emerald-100 rounded-xl px-4 shadow-none border border-emerald-200')
+
+                    # Área de Filtros e Facetas (Inicia Oculta)
+                    with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
+                        area_filtros.visible = False # Esconde ao iniciar
+                        
+                        ui.label('Filtros e Facetas').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
+                        
+                        with ui.row().classes('w-full gap-4'):
+                            descritor = ui.input(label='Descritor MeSH/DeCS', placeholder='Ex: Neoplasias').classes('flex-grow')
+                            tipo_doc = ui.select(label='Tipo de Documento', options=['Todos', 'Artigo Original', 'Revisão Sistemática'], value='Todos').classes('w-1/3')
+                        
+                        with ui.row().classes('w-full justify-end gap-3 mt-2'):
+                            ui.button('Limpar', on_click=lambda: [descritor.set_value(''), tipo_doc.set_value('Todos')]).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
+                            ui.button('Aplicar Filtros', icon='filter_list').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
+
+                # --------------------------------------------------------
+                # 2. ÁREA DE RESULTADOS
+                # --------------------------------------------------------
+                with ui.column().classes('w-full gap-4 mt-2'):
+                    ui.label('Acervo Recente').classes('text-lg font-bold text-emerald-900 ml-2')
                     
                     # Card de Exemplo Estilizado
-                    with ui.card().classes('w-full p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 border-l-4 border-l-emerald-600 gap-2'):
+                    with ui.card().classes('w-full p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 border-l-4 border-l-emerald-600 gap-2 hover:bg-slate-50 transition-colors cursor-pointer'):
                         ui.label('Avaliação de estratégias de busca em bases de dados biomédicas').classes('text-lg font-bold text-slate-900')
                         ui.label('Autores: Silva, M. et al. • Ano: 2026 • DOI: 10.1016/j.jbi.2026.100').classes('text-xs text-slate-400 font-medium')
                         ui.label('Resumo descritivo focado na clareza visual e na legibilidade dos metadados extraídos automaticamente do artigo científico.').classes('text-sm text-slate-600 leading-relaxed mb-2')
