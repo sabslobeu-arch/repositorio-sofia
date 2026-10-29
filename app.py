@@ -7,9 +7,6 @@ ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
 # Configuração global de fundo (tom claro esverdeado suave)
 ui.query('body').style('background-color: #f0fdf4;')
 
-# Configuração global de fundo (tom claro esverdeado suave)
-ui.query('body').style('background-color: #f0fdf4;')
-
 # --- CABEÇALHO ---
 with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-emerald-100'):
     with ui.row().classes('items-center gap-4'):
@@ -28,10 +25,14 @@ with ui.column().classes('w-full items-center justify-center pt-10 pb-4 px-4 gap
 # --- CONTEÚDO PRINCIPAL COM ABAS ---
 with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
     
-    # Declaração das abas (Em cima)
+    # DECLARAÇÃO DAS 6 ABAS
     with ui.tabs().classes('w-full bg-white rounded-xl shadow-sm p-1 text-emerald-800') as tabs:
         tab_busca = ui.tab('Acervo & Busca', icon='search').classes('rounded-lg transition')
         tab_submissao = ui.tab('Nova Submissão', icon='upload_file').classes('rounded-lg transition')
+        tab_programas = ui.tab('Programas da Pós', icon='school').classes('rounded-lg transition')
+        tab_equipe = ui.tab('Equipe de Ensino', icon='groups').classes('rounded-lg transition')
+        tab_pesquisadores = ui.tab('Pesquisadores', icon='recent_actors').classes('rounded-lg transition')
+        tab_contato = ui.tab('Contato', icon='mail').classes('rounded-lg transition')
 
     with ui.tab_panels(tabs, value=tab_busca).classes('w-full bg-transparent p-0'):
         
@@ -41,12 +42,11 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         with ui.tab_panel(tab_busca).classes('p-0 pt-2'):
             with ui.column().classes('w-full gap-6'):
                 
-                # 1. BARRA DE PESQUISA UNIFICADA
-                # O visual de 'card' faz tudo parecer uma barra única
+                # BARRA DE PESQUISA UNIFICADA
                 with ui.card().classes('w-full p-2 bg-white rounded-2xl shadow-md border border-emerald-100'):
                     
                     with ui.row().classes('w-full items-center no-wrap'):
-                        # Input sem borda ocupando o espaço todo
+                        # Input principal
                         busca_input = ui.input(placeholder='Digite termos clínicos, DOI ou palavras-chave...').classes('flex-grow px-2').props('borderless')
                         
                         # Lógica para mostrar/esconder filtros
@@ -54,10 +54,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             area_filtros.visible = not area_filtros.visible
                             btn_avancada.props(f'icon={"expand_less" if area_filtros.visible else "tune"}')
 
-                        # Botão Avançada "embutido" ao lado da busca
                         btn_avancada = ui.button('Avançada', icon='tune', on_click=toggle_filtros).classes('bg-emerald-50 text-emerald-900 hover:bg-emerald-100 rounded-xl px-4 shadow-none border border-emerald-200 mr-2')
                         
-                        # Botão Principal de Buscar
                         ui.button(icon='search', on_click=lambda: ui.notify(f'Buscando por: {busca_input.value}')).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
 
                     # Gaveta de Filtros (Oculta até clicar em Avançada)
@@ -75,20 +73,16 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             ).classes('flex-grow').props('outlined dense')
                             
                             # Campo específico para o ano
-                            filtro_ano = ui.input(
-                                label='Ano', 
-                                placeholder='Ex: 2026'
-                            ).classes('w-1/4').props('outlined dense')
+                            filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-1/4').props('outlined dense')
                         
                         with ui.row().classes('w-full justify-end gap-3 mt-2'):
-                            # Botão Limpar reseta os novos filtros
                             ui.button('Limpar', on_click=lambda: [campo_alvo.set_value('Todos os campos'), filtro_ano.set_value('')]).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
                             ui.button('Aplicar Filtros', icon='filter_list').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
-                # 2. ÁREA DE RESULTADOS
+
+                # ÁREA DE RESULTADOS
                 with ui.column().classes('w-full gap-4 mt-2'):
                     ui.label('Acervo Recente').classes('text-lg font-bold text-emerald-900 ml-2')
                     
-                    # Card de Exemplo
                     with ui.card().classes('w-full p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 border-l-4 border-l-emerald-600 gap-2 hover:bg-slate-50 transition-colors cursor-pointer'):
                         ui.label('Avaliação de estratégias de busca em bases de dados biomédicas').classes('text-lg font-bold text-slate-900')
                         ui.label('Autores: Silva, M. et al. • Ano: 2026 • DOI: 10.1016/j.jbi.2026.100').classes('text-xs text-slate-400 font-medium')
@@ -117,6 +111,44 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 ui.upload(label='Arraste o arquivo PDF aqui ou clique para selecionar').classes('w-full border-2 border-dashed border-emerald-200 rounded-2xl p-4 bg-emerald-50/30')
                 
                 ui.button('Salvar no Repositório', icon='save').classes('w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-xl py-3 mt-4 shadow-sm')
+
+        # ========================================================
+        # ABA 3: PROGRAMAS DA PÓS
+        # ========================================================
+        with ui.tab_panel(tab_programas).classes('p-0 pt-2'):
+            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
+                ui.icon('school', size='4rem', color='emerald').classes('mx-auto mb-4')
+                ui.label('Programas de Pós-Graduação').classes('text-2xl font-bold text-emerald-900')
+                ui.label('Página em desenvolvimento. Em breve disponibilizaremos a grade curricular.').classes('text-slate-500 mt-2')
+
+        # ========================================================
+        # ABA 4: EQUIPE DE ENSINO
+        # ========================================================
+        with ui.tab_panel(tab_equipe).classes('p-0 pt-2'):
+            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
+                ui.icon('groups', size='4rem', color='emerald').classes('mx-auto mb-4')
+                ui.label('Equipe de Ensino').classes('text-2xl font-bold text-emerald-900')
+                ui.label('Página em desenvolvimento. Em breve conheceremos o corpo docente.').classes('text-slate-500 mt-2')
+
+        # ========================================================
+        # ABA 5: LISTA DE PESQUISADORES
+        # ========================================================
+        with ui.tab_panel(tab_pesquisadores).classes('p-0 pt-2'):
+            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
+                ui.icon('recent_actors', size='4rem', color='emerald').classes('mx-auto mb-4')
+                ui.label('Lista de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
+                ui.label('Página em desenvolvimento. Em breve o diretório de pesquisadores ativos.').classes('text-slate-500 mt-2')
+
+        # ========================================================
+        # ABA 6: ENTRE EM CONTATO
+        # ========================================================
+        with ui.tab_panel(tab_contato).classes('p-0 pt-2'):
+            with ui.card().classes('w-full max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 gap-4'):
+                ui.label('Fale Conosco').classes('text-2xl font-bold text-emerald-900 text-center w-full mb-4')
+                ui.input(label='Nome Completo').classes('w-full').props('outlined dense')
+                ui.input(label='E-mail').classes('w-full').props('outlined dense')
+                ui.textarea(label='Mensagem').classes('w-full').props('outlined dense')
+                ui.button('Enviar Mensagem', icon='send').classes('w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-xl py-2 mt-4 shadow-sm')
 
 # Inicialização do Servidor para o Render
 port = int(os.environ.get('PORT', 8080))
