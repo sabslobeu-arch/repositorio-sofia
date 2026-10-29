@@ -1,6 +1,12 @@
 import os
 from nicegui import ui
 
+# 1. SUBSTITUI O AZUL PADRÃO PELO VERDE-ESCURO INSTITUCIONAL
+ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
+
+# Configuração global de fundo (tom claro esverdeado suave)
+ui.query('body').style('background-color: #f0fdf4;')
+
 # Configuração global de fundo (tom claro esverdeado suave)
 ui.query('body').style('background-color: #f0fdf4;')
 
@@ -58,16 +64,26 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
                         area_filtros.visible = False 
                         
-                        ui.label('Filtros e Facetas').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
+                        ui.label('Filtros').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
                         
                         with ui.row().classes('w-full gap-4'):
-                            descritor = ui.input(label='Descritor MeSH/DeCS', placeholder='Ex: Neoplasias').classes('flex-grow').props('outlined dense')
-                            tipo_doc = ui.select(label='Tipo de Documento', options=['Todos', 'Artigo Original', 'Revisão Sistemática', 'Diretriz'], value='Todos').classes('w-1/3').props('outlined dense')
+                            # Seletor para escolher onde a busca será aplicada
+                            campo_alvo = ui.select(
+                                label='Pesquisar em', 
+                                options=['Todos os campos', 'Título', 'Resumo', 'Pesquisador'], 
+                                value='Todos os campos'
+                            ).classes('flex-grow').props('outlined dense')
+                            
+                            # Campo específico para o ano
+                            filtro_ano = ui.input(
+                                label='Ano', 
+                                placeholder='Ex: 2026'
+                            ).classes('w-1/4').props('outlined dense')
                         
                         with ui.row().classes('w-full justify-end gap-3 mt-2'):
-                            ui.button('Limpar', on_click=lambda: [descritor.set_value(''), tipo_doc.set_value('Todos')]).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
+                            # Botão Limpar reseta os novos filtros
+                            ui.button('Limpar', on_click=lambda: [campo_alvo.set_value('Todos os campos'), filtro_ano.set_value('')]).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
                             ui.button('Aplicar Filtros', icon='filter_list').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
-
                 # 2. ÁREA DE RESULTADOS
                 with ui.column().classes('w-full gap-4 mt-2'):
                     ui.label('Acervo Recente').classes('text-lg font-bold text-emerald-900 ml-2')
