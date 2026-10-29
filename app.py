@@ -1,5 +1,5 @@
 import os
-from nicegui import ui, app
+from nicegui import ui
 
 # Configuração global de fundo (tom claro esverdeado suave)
 ui.query('body').style('background-color: #f0fdf4;')
@@ -27,7 +27,17 @@ with ui.column().classes('w-full items-center justify-center py-12 px-4 gap-6'):
             search_input = ui.input(placeholder='Digite termos clínicos, DOI ou palavras-chave...').classes('flex-grow')
             ui.button('Buscar', on_click=lambda: ui.notify(f'Buscando por: {search_input.value}')).classes('bg-emerald-700 text-white hover:bg-emerald-800')
 
-# --- ABA 1: BUSCA ---
+# --- CONTEÚDO PRINCIPAL COM ABAS ESTILIZADAS ---
+with ui.column().classes('w-full max-w-7xl mx-auto p-6 gap-6'):
+    
+    # Declaração das abas
+    with ui.tabs().classes('w-full bg-white rounded-xl shadow-sm p-1 text-emerald-800') as tabs:
+        tab_busca = ui.tab('Acervo & Busca', icon='search').classes('rounded-lg transition')
+        tab_submissao = ui.tab('Nova Submissão', icon='upload_file').classes('rounded-lg transition')
+
+    with ui.tab_panels(tabs, value=tab_busca).classes('w-full bg-transparent'):
+        
+        # --- ABA 1: BUSCA ---
         with ui.tab_panel(tab_busca).classes('p-0 pt-4'):
             with ui.column().classes('w-full gap-6'):
                 
