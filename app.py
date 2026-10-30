@@ -195,7 +195,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 ui.label('Lista de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
                 ui.label('Página em desenvolvimento. Em breve o diretório de pesquisadores ativos.').classes('text-slate-500 mt-2')
 
-        
         # ========================================================
         # ABA 6: ENTRE EM CONTATO
         # ========================================================
@@ -205,18 +204,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 ui.label('Fale Conosco').classes('text-2xl font-bold text-emerald-900 mt-2')
                 ui.label('Preencha o formulário abaixo e nossa equipe responderá em breve.').classes('text-sm text-slate-600 mb-4')
                 
-                # Iframe com o width em 100% para ser responsivo
-                codigo_iframe = '''
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScxCJl1CFOL3tOlFTLuvrXm1U0uAqubJsGBbNkgx15uML9Dqw/viewform?embedded=true" 
-                        width="100%" 
-                        height="760" 
-                        frameborder="0" 
-                        marginheight="0" 
-                        marginwidth="0">
-                    Carregando formulário...
-                </iframe>
-                '''
-                ui.html(codigo_iframe).classes('w-full')
+                # Forma nativa e à prova de falhas de colocar o iframe no NiceGUI
+                ui.element('iframe').props(
+                    'src="https://docs.google.com/forms/d/e/1FAIpQLScxCJl1CFOL3tOlFTLuvrXm1U0uAqubJsGBbNkgx15uML9Dqw/viewform?embedded=true" '
+                    'width="100%" '
+                    'height="800" '
+                    'frameborder="0"'
+                ).classes('w-full bg-transparent')
 
 # Inicialização do Servidor para o Render
 port = int(os.environ.get('PORT', 8080))
