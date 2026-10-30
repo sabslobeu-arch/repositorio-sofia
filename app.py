@@ -29,7 +29,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
     
     # DECLARAÇÃO DAS 6 ABAS
     with ui.tabs().classes('w-full bg-white rounded-xl shadow-sm p-1 text-emerald-800') as tabs:
-        tab_busca = ui.tab('Acervo & Busca', icon='search').classes('rounded-lg transition')
+        tab_busca = ui.tab('Busca', icon='search').classes('rounded-lg transition')
         tab_submissao = ui.tab('Nova Submissão', icon='upload_file').classes('rounded-lg transition')
         tab_programas = ui.tab('Programas da Pós', icon='school').classes('rounded-lg transition')
         tab_equipe = ui.tab('Equipe de Ensino', icon='groups').classes('rounded-lg transition')
@@ -195,16 +195,28 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 ui.label('Lista de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
                 ui.label('Página em desenvolvimento. Em breve o diretório de pesquisadores ativos.').classes('text-slate-500 mt-2')
 
+        
         # ========================================================
         # ABA 6: ENTRE EM CONTATO
         # ========================================================
         with ui.tab_panel(tab_contato).classes('p-0 pt-2'):
-            with ui.card().classes('w-full max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 gap-4'):
-                ui.label('Fale Conosco').classes('text-2xl font-bold text-emerald-900 text-center w-full mb-4')
-                ui.input(label='Nome Completo').classes('w-full').props('outlined dense')
-                ui.input(label='E-mail').classes('w-full').props('outlined dense')
-                ui.textarea(label='Mensagem').classes('w-full').props('outlined dense')
-                ui.button('Enviar Mensagem', icon='send').classes('w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-xl py-2 mt-4 shadow-sm')
+            with ui.card().classes('w-full max-w-4xl mx-auto p-4 bg-white rounded-2xl shadow-sm border border-emerald-100 items-center text-center'):
+                
+                ui.label('Fale Conosco').classes('text-2xl font-bold text-emerald-900 mt-2')
+                ui.label('Preencha o formulário abaixo e nossa equipe responderá em breve.').classes('text-sm text-slate-600 mb-4')
+                
+                # Iframe com o width em 100% para ser responsivo
+                codigo_iframe = '''
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScxCJl1CFOL3tOlFTLuvrXm1U0uAqubJsGBbNkgx15uML9Dqw/viewform?embedded=true" 
+                        width="100%" 
+                        height="760" 
+                        frameborder="0" 
+                        marginheight="0" 
+                        marginwidth="0">
+                    Carregando formulário...
+                </iframe>
+                '''
+                ui.html(codigo_iframe).classes('w-full')
 
 # Inicialização do Servidor para o Render
 port = int(os.environ.get('PORT', 8080))
