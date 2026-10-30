@@ -145,10 +145,37 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ABA 3: PROGRAMAS DA PÓS
         # ========================================================
         with ui.tab_panel(tab_programas).classes('p-0 pt-2'):
-            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
-                ui.icon('school', size='4rem', color='emerald').classes('mx-auto mb-4')
-                ui.label('Programas de Pós-Graduação').classes('text-2xl font-bold text-emerald-900')
-                ui.label('Página em desenvolvimento. Em breve disponibilizaremos a grade curricular.').classes('text-slate-500 mt-2')
+            ui.label('Nossos Programas de Residência').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
+            
+            with ui.row().classes('w-full gap-6'):
+                
+                # 1. Ginecologia e Obstetrícia
+                with ui.card().classes('w-80 p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                    ui.icon('pregnant_woman', color='emerald', size='2rem').classes('mb-2 bg-emerald-50 p-2 rounded-lg')
+                    ui.label('Residência Médica em Ginecologia e Obstetrícia').classes('text-lg font-bold text-emerald-900 leading-tight h-14')
+                    ui.label('Especialização com foco no cuidado integral à saúde da mulher, gestação, parto e puerpério.').classes('text-sm text-slate-600 mt-2 mb-4 h-16')
+                    ui.button('Ver no Site Institucional', icon='open_in_new').props('href="https://sofiafeldman.org.br/residencia-medica-ginecologia-obstetricia/" target="_blank"').classes('w-full bg-emerald-50 text-emerald-900 hover:bg-emerald-100 shadow-none border border-emerald-200 rounded-xl')
+
+                # 2. Neonatologia
+                with ui.card().classes('w-80 p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                    ui.icon('child_care', color='emerald', size='2rem').classes('mb-2 bg-emerald-50 p-2 rounded-lg')
+                    ui.label('Residência Médica em Neonatologia').classes('text-lg font-bold text-emerald-900 leading-tight h-14')
+                    ui.label('Formação avançada no cuidado intensivo e assistência especializada ao recém-nascido.').classes('text-sm text-slate-600 mt-2 mb-4 h-16')
+                    ui.button('Ver no Site Institucional', icon='open_in_new').props('href="https://sofiafeldman.org.br/residencia-medica-neonatologia-2/" target="_blank"').classes('w-full bg-emerald-50 text-emerald-900 hover:bg-emerald-100 shadow-none border border-emerald-200 rounded-xl')
+
+                # 3. Enfermagem e Obstetrícia
+                with ui.card().classes('w-80 p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                    ui.icon('medical_services', color='emerald', size='2rem').classes('mb-2 bg-emerald-50 p-2 rounded-lg')
+                    ui.label('Residência em Enfermagem e Obstetrícia').classes('text-lg font-bold text-emerald-900 leading-tight h-14')
+                    ui.label('Qualificação em enfermagem obstétrica para assistência segura e humanizada.').classes('text-sm text-slate-600 mt-2 mb-4 h-16')
+                    ui.button('Ver no Site Institucional', icon='open_in_new').props('href="https://sofiafeldman.org.br/residencia-enfermagem-obstetrica-2/" target="_blank"').classes('w-full bg-emerald-50 text-emerald-900 hover:bg-emerald-100 shadow-none border border-emerald-200 rounded-xl')
+
+                # 4. Multiprofissional em Neonatologia
+                with ui.card().classes('w-80 p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                    ui.icon('diversity_1', color='emerald', size='2rem').classes('mb-2 bg-emerald-50 p-2 rounded-lg')
+                    ui.label('Residência Multiprofissional em Neonatologia').classes('text-lg font-bold text-emerald-900 leading-tight h-14')
+                    ui.label('Atuação integrada de diversas categorias profissionais no cuidado intensivo neonatal.').classes('text-sm text-slate-600 mt-2 mb-4 h-16')
+                    ui.button('Ver no Site Institucional', icon='open_in_new').props('href="https://sofiafeldman.org.br/residencia-multi-neonatologia/" target="_blank"').classes('w-full bg-emerald-50 text-emerald-900 hover:bg-emerald-100 shadow-none border border-emerald-200 rounded-xl')
 
         # ========================================================
         # ABA 4: EQUIPE DE ENSINO
