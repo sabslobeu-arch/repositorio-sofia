@@ -58,26 +58,53 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         
                         ui.button(icon='search', on_click=lambda: ui.notify(f'Buscando por: {busca_input.value}')).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
 
-                    # Gaveta de Filtros (Oculta até clicar em Avançada)
+                    # Gaveta de Filtros e Busca Combinada (Oculta até clicar em Avançada)
                     with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
                         area_filtros.visible = False 
                         
-                        ui.label('Filtros').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
+                        # --- 1. BUSCA COMBINADA (BOOLEANA) ---
+                        ui.label('Busca Combinada (Operadores Booleanos)').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
                         
+                        with ui.row().classes('w-full gap-3 items-center'):
+                            operador = ui.select(options=['AND (E)', 'OR (Ou)', 'NOT (Não)'], value='AND (E)', label='Operador').classes('w-32').props('outlined dense')
+                            termo_combinado = ui.input(label='Termo adicional', placeholder='Digite o termo para combinar...').classes('flex-grow').props('outlined dense')
+                            campo_combinado = ui.select(options=['Todos os campos', 'Título', 'Resumo', 'Pesquisador'], value='Todos os campos', label='Pesquisar em').classes('w-48').props('outlined dense')
+
+                        ui.separator().classes('my-1 border-emerald-200/50')
+                        
+                        # --- 2. FILTROS ESPECÍFICOS ---
+                        ui.label('Filtros Específicos').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
+                        
+                        # Linha 1 de filtros
                         with ui.row().classes('w-full gap-4'):
-                            # Seletor para escolher onde a busca será aplicada
-                            campo_alvo = ui.select(
-                                label='Pesquisar em', 
-                                options=['Todos os campos', 'Título', 'Resumo', 'Pesquisador'], 
-                                value='Todos os campos'
-                            ).classes('flex-grow').props('outlined dense')
+                            filtro_titulo = ui.input(label='Título', placeholder='Palavras no título...').classes('flex-grow').props('outlined dense')
+                            filtro_resumo = ui.input(label='Resumo', placeholder='Palavras no resumo...').classes('flex-grow').props('outlined dense')
+                            palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('w-1/4').props('outlined dense')
                             
-                            # Campo específico para o ano
-                            filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-1/4').props('outlined dense')
+                        # Linha 2 de filtros
+                        with ui.row().classes('w-full gap-4 mt-2'):
+                            filtro_pesquisador = ui.input(label='Pesquisador', placeholder='Nome do autor...').classes('flex-grow').props('outlined dense')
+                            programas_pos = ui.select(
+                                label='Programa da Pós', 
+                                options=['Todos', 'Residência Médica', 'Residência Multiprofissional', 'Mestrado Profissional', 'Especialização'], 
+                                value='Todos'
+                            ).classes('w-1/3').props('outlined dense')
+                            filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-32').props('outlined dense')
                         
                         with ui.row().classes('w-full justify-end gap-3 mt-2'):
-                            ui.button('Limpar', on_click=lambda: [campo_alvo.set_value('Todos os campos'), filtro_ano.set_value('')]).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
-                            ui.button('Aplicar Filtros', icon='filter_list').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
+                            def limpar_filtros():
+                                operador.set_value('AND (E)')
+                                termo_combinado.set_value('')
+                                campo_combinado.set_value('Todos os campos')
+                                filtro_titulo.set_value('')
+                                filtro_resumo.set_value('')
+                                palavras_chave.set_value('')
+                                filtro_pesquisador.set_value('')
+                                programas_pos.set_value('Todos')
+                                filtro_ano.set_value('')
+
+                            ui.button('Limpar Filtros', on_click=limpar_filtros).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
+                            ui.button('Aplicar Busca Avançada', icon='search').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
 
                 # ÁREA DE RESULTADOS
                 with ui.column().classes('w-full gap-4 mt-2'):
