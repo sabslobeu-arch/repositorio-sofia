@@ -7,11 +7,13 @@ ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
 # Configuração global de fundo (tom claro esverdeado suave)
 ui.query('body').style('background-color: #f0fdf4;')
 
-# --- CABEÇALHO ---
-with ui.row().classes('w-full items-center justify-between bg-white px-8 py-4 shadow-sm border-b border-emerald-100'):
-    with ui.row().classes('items-center gap-4'):
-        ui.label('Repositório Sofia').classes('text-lg font-bold text-emerald-800 tracking-tight')
-    ui.badge('Online', color='green').classes('text-xs px-3 py-1')
+# --- CABEÇALHO UTILITÁRIO ---
+with ui.row().classes('w-full items-center justify-between bg-emerald-900 px-8 py-2 shadow-sm'):
+    ui.label('HOSPITAL SOFIA FELDMAN - ENSINO E PESQUISA').classes('text-xs font-bold text-emerald-100 uppercase tracking-widest')
+    
+    # Links institucionais à direita
+    with ui.row().classes('items-center gap-6'):
+        ui.link('Portal Institucional', 'https://www.sofiafeldman.org.br').classes('text-xs text-emerald-100 hover:text-white no-underline transition-colors')
 
 # --- ÁREA PRINCIPAL ---
 with ui.column().classes('w-full items-center justify-center pt-10 pb-4 px-4 gap-4'):
