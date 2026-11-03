@@ -190,8 +190,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     input_ano = ui.input('Ano').props('outlined').classes('w-32')
                 
                 with ui.row().classes('w-full gap-4 mb-4 no-wrap'):
-                    ui.select(['Artigo', 'TCC', 'Dissertação', 'Diretriz', 'Protocolo'], label='Tipo').props('outlined').classes('w-64')
-                    ui.select(['Nenhum', 'Residência Médica em GO', 'Residência Médica em Neonatologia', 'Residência Multiprofissional'], label='Programa da Pós (Se houver)').props('outlined').classes('flex-grow')
+                    ui.select(['Artigo', 'TCC', 'TCR', 'Dissertação', 'Relatório', 'capítulo de Livro', 'Congresso', 'Tese', 'Livro'], label='Tipo').props('outlined').classes('w-64')
+                    ui.select(['Nenhum', 'Residência Médica em GO', 'Residência Médica em Neonatologia', 'Residência em Enfermagem e Obstetrícia ', 'Residência Multiprofissional em Neonatologia'], label='Programa da Pós (Se houver)').props('outlined').classes('flex-grow')
                 
                 ui.input('Palavras-chave (separadas por ;)').props('outlined').classes('w-full mb-6')
                 
