@@ -186,9 +186,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 ui.label('Equipe de Ensino').classes('text-2xl font-bold text-emerald-900')
                 ui.label('Página em desenvolvimento. Em breve conheceremos o corpo docente.').classes('text-slate-500 mt-2')
 
-        # ========================================================
-        # ABA 5: LISTA DE PESQUISADORES
-        # ========================================================
+       
         # ========================================================
         # ABA 5: LISTA DE PESQUISADORES
         # ========================================================
@@ -229,7 +227,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         with ui.row().classes('w-full items-center no-wrap gap-4'):
                             
                             # Ícone
-                            ui.avatar('science', color='emerald-50', text_color='emerald-700')
+                            ui.avatar('school', color='emerald-50', text_color='emerald-700')
                             
                             # Textos
                             with ui.column().classes('gap-0'):
