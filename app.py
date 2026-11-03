@@ -189,11 +189,53 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ========================================================
         # ABA 5: LISTA DE PESQUISADORES
         # ========================================================
+        # ========================================================
+        # ABA 5: LISTA DE PESQUISADORES
+        # ========================================================
         with ui.tab_panel(tab_pesquisadores).classes('p-0 pt-2'):
-            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
-                ui.icon('recent_actors', size='4rem', color='emerald').classes('mx-auto mb-4')
-                ui.label('Lista de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
-                ui.label('Página em desenvolvimento. Em breve o diretório de pesquisadores ativos.').classes('text-slate-500 mt-2')
+            
+            # 1. PREENCHA OS DADOS AQUI (Adicione quantas linhas precisar)
+            dados_pesquisadores = [
+                {'nome': 'Andrezza Lopes', 'formacao': 'Médica GO', 'titulacao': 'Doutora'},
+                {'nome': 'Aryanne Gabriele Policarpo', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Camilla Lorraine Moura Dias', 'formacao': 'Enfermeira Neonatal', 'titulacao': 'Mestre'},
+                {'nome': 'Cintia Ribeiro Santos ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Cristiane Alessandra da Silva  ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Danubia Mariane Barbosa Jardim de Carvalho ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Doutora'},
+                {'nome': 'Debora Lucas Viana Goncalves ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Elisa Lima e Silva', 'formacao': 'Enfermeira Intensivista', 'titulacao': 'Mestre'},
+                {'nome': 'Flavia A F L. Silva ', 'formacao': 'Fonoaudiologa', 'titulacao': 'Doutora'},
+                {'nome': 'Lorena Azevedo Correia', 'formacao': 'Terapeuta ocupacional', 'titulacao': 'Mestre'},
+                {'nome': 'Lorena Oliveira Nogueira', 'formacao': 'Nutricionista', 'titulacao': 'Mestre'},
+                {'nome': 'Marília A. R. Oliveira Santos', 'formacao': 'Assistente Social ', 'titulacao': 'Mestre'},
+                {'nome': 'Patrícia Rodrigues Da Costa', 'formacao': 'Terapeuta Ocupacional', 'titulacao': 'Mestre'},
+                {'nome': 'Regina Célia Coelho de Moraes', 'formacao': 'Nutricionista', 'titulacao': 'Mestre'},
+                {'nome': 'Solange Clessêncio Ferreira Diniz', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Doutora'},
+                {'nome': 'Tatiana Coelho Lopes', 'formacao': 'Fisioterapeuta', 'titulacao': 'Pós-Doutora'},
+                {'nome': 'Barbara Barroso Siqueira', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Caroline Reis ', 'formacao': 'Médica', 'titulacao': 'Mestre'},
+                {'nome': 'Tânia Antunes Carvalho  ', 'formacao': 'Médica', 'titulacao': 'Mestre'},
+                {'nome': 'Diego Alcântara Alves  ', 'formacao': 'Enfermeiro Obstétrico', 'titulacao': 'Mestre'},
+            ]
+
+            with ui.row().classes('w-full items-center justify-between mb-6 px-2'):
+                ui.label('Diretório de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
+                ui.input(placeholder='Buscar pesquisador...').props('outlined dense icon=search').classes('w-64')
+            
+            # 2. O SISTEMA GERA O VISUAL SOZINHO BASEADO NA LISTA ACIMA
+            with ui.column().classes('w-full gap-3'):
+                for pesq in dados_pesquisadores:
+                    with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-300 transition-colors'):
+                        with ui.row().classes('w-full items-center no-wrap gap-4'):
+                            
+                            # Ícone
+                            ui.avatar('science', color='emerald-50', text_color='emerald-700')
+                            
+                            # Textos
+                            with ui.column().classes('gap-0'):
+                                ui.label(pesq['nome']).classes('text-base font-bold text-emerald-900')
+                                ui.label(pesq['titulacao']).classes('text-xs font-bold text-emerald-700 uppercase tracking-wide')
+                                ui.label(f"Formação: {pesq['formacao']}").classes('text-sm text-slate-600 mt-1')
 
         # ========================================================
         # ABA 6: ENTRE EM CONTATO
