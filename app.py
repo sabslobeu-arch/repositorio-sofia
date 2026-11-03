@@ -195,8 +195,12 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 
                 ui.input('Palavras-chave (separadas por ;)').props('outlined').classes('w-full mb-6')
                 
-                # Botão final (por enquanto não salva em lugar nenhum, só visual)
-                ui.button('Salvar no Acervo', icon='save').classes('w-full bg-emerald-900 hover:bg-emerald-800 text-white rounded-xl py-3 shadow-none')
+                # --- SESSÃO 3: UPLOAD DO PDF ---
+                ui.label('3. Arquivo PDF').classes('font-bold text-emerald-800 mb-4')
+                ui.upload(label='Clique ou arraste o PDF aqui', accept='.pdf', auto_upload=False, max_files=1).classes('w-full mb-8 border-2 border-dashed border-emerald-200 rounded-xl')
+                
+                # Botão final 
+                ui.button('Salvar no Acervo', icon='save').classes('w-full bg-emerald-900 hover:bg-emerald-800 text-white rounded-xl py-3 shadow-none text-lg')
 
         # ========================================================
         # ABA 3: PROGRAMAS DA PÓS
