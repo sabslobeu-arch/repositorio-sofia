@@ -1,5 +1,7 @@
 import os
 from nicegui import ui
+import urllib.request 
+import json
 
 # 1. SUBSTITUI O AZUL PADRÃO PELO VERDE-ESCURO INSTITUCIONAL
 ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
@@ -88,7 +90,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             filtro_pesquisador = ui.input(label='Pesquisador', placeholder='Nome do autor...').classes('flex-grow').props('outlined dense')
                             programas_pos = ui.select(
                                 label='Programa da Pós', 
-                                options=['Todos', 'Residência Médica', 'Residência Multiprofissional', 'Mestrado Profissional', 'Especialização'], 
+                                options=['Todos', 'Residência Médica em Ginecologia e Obstetrícia', 'Residência Médica em Neonatologia', 'Residência em Enfermagem e Obstetrícia', 'Residência Multiprofissional em Neonatologia'], 
                                 value='Todos'
                             ).classes('w-1/3').props('outlined dense')
                             filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-32').props('outlined dense')
@@ -125,21 +127,76 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ABA 2: NOVA SUBMISSÃO
         # ========================================================
         with ui.tab_panel(tab_submissao).classes('p-0 pt-2'):
-            with ui.card().classes('w-full max-w-3xl mx-auto p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 gap-4'):
-                ui.label('Cadastrar Novo Documento').classes('text-xl font-bold text-emerald-900')
-                ui.label('Insira o DOI para recuperação automática ou preencha manualmente os campos.').classes('text-xs text-slate-500 mb-2')
-                
-                with ui.row().classes('w-full items-end gap-3'):
-                    ui.input(label='DOI do Artigo', placeholder='10.xxxx/...').classes('flex-grow').props('outlined dense')
-                    ui.button('Buscar DOI', icon='cloud_download').classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow-sm')
+            ui.label('Cadastrar Novo Documento').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
 
-                ui.input(label='Título').classes('w-full').props('outlined dense')
-                ui.input(label='Autores').classes('w-full').props('outlined dense')
-                ui.textarea(label='Resumo').classes('w-full').props('outlined dense')
+            with ui.card().classes('w-full max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-sm border border-emerald-100'):
                 
-                ui.upload(label='Arraste o arquivo PDF aqui ou clique para selecionar').classes('w-full border-2 border-dashed border-emerald-200 rounded-2xl p-4 bg-emerald-50/30')
+                # --- SESSÃO 1: A MÁGICA DO DOI ---
+                ui.label('1. Busca Automática (Opcional)').classes('font-bold text-emerald-800 mb-2')
+                with ui.row().classes('w-full items-center gap-4 mb-6'):
+                    input_doi = ui.input('Digite o DOI (ex: 10.1590/...)').props('outlined dense').classes('flex-grow')
+                    
+                    # Função que vai na internet buscar os dados
+                    def buscar_dados_doi():
+                        doi_digitado = input_doi.value.strip()
+                        if not doi_digitado:
+                            ui.notify('Por favor, digite um DOI.', color='warning')
+                            return
+                        
+                        try:
+                            ui.notify('Buscando dados no Crossref...', color='info')
+                            # Monta o link da busca
+                            url = f"https://api.crossref.org/works/{doi_digitado}"
+                            req = urllib.request.Request(url, headers={'User-Agent': 'RepositorioSofia/1.0'})
+                            
+                            # Faz a requisição
+                            with urllib.request.urlopen(req) as resposta:
+                                dados = json.loads(resposta.read().decode())
+                                msg = dados['message']
+                                
+                                # 1. Puxa o Título
+                                titulo_encontrado = msg.get('title', [''])[0]
+                                input_titulo.value = titulo_encontrado
+                                
+                                # 2. Puxa e Formata os Autores (Sobrenome, Nome;)
+                                autores_formatados = []
+                                for autor in msg.get('author', []):
+                                    if 'family' in autor and 'given' in autor:
+                                        autores_formatados.append(f"{autor['family']}, {autor['given']}")
+                                input_autores.value = "; ".join(autores_formatados)
+                                
+                                # 3. Puxa o Ano de publicação
+                                ano_encontrado = ''
+                                if 'issued' in msg and 'date-parts' in msg['issued']:
+                                    ano_encontrado = str(msg['issued']['date-parts'][0][0])
+                                input_ano.value = ano_encontrado
+                                
+                                ui.notify('Dados preenchidos com sucesso!', color='positive')
+                                
+                        except Exception as e:
+                            ui.notify('DOI não encontrado ou erro de conexão.', color='negative')
+
+                    ui.button('Buscar DOI', icon='auto_awesome', on_click=buscar_dados_doi).classes('bg-emerald-700 text-white rounded-lg shadow-none px-6')
                 
-                ui.button('Salvar no Repositório', icon='save').classes('w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-xl py-3 mt-4 shadow-sm')
+                ui.separator().classes('mb-6')
+                
+                # --- SESSÃO 2: OS CAMPOS DO FORMULÁRIO ---
+                ui.label('2. Dados do Documento').classes('font-bold text-emerald-800 mb-4')
+                
+                input_titulo = ui.input('Título do Trabalho').props('outlined').classes('w-full mb-4')
+                
+                with ui.row().classes('w-full gap-4 mb-4 no-wrap'):
+                    input_autores = ui.input('Autores (separados por ;)').props('outlined').classes('flex-grow')
+                    input_ano = ui.input('Ano').props('outlined').classes('w-32')
+                
+                with ui.row().classes('w-full gap-4 mb-4 no-wrap'):
+                    ui.select(['Artigo', 'TCC', 'Dissertação', 'Diretriz', 'Protocolo'], label='Tipo').props('outlined').classes('w-64')
+                    ui.select(['Nenhum', 'Residência Médica em GO', 'Residência Médica em Neonatologia', 'Residência Multiprofissional'], label='Programa da Pós (Se houver)').props('outlined').classes('flex-grow')
+                
+                ui.input('Palavras-chave (separadas por ;)').props('outlined').classes('w-full mb-6')
+                
+                # Botão final (por enquanto não salva em lugar nenhum, só visual)
+                ui.button('Salvar no Acervo', icon='save').classes('w-full bg-emerald-900 hover:bg-emerald-800 text-white rounded-xl py-3 shadow-none')
 
         # ========================================================
         # ABA 3: PROGRAMAS DA PÓS
