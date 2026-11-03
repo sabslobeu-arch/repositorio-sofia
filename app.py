@@ -216,9 +216,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 {'nome': 'Diego Alcântara Alves  ', 'formacao': 'Enfermeiro Obstétrico', 'titulacao': 'Mestre'},
             ]
 
-            with ui.row().classes('w-full items-center justify-between mb-6 px-2'):
-                ui.label('Diretório de Pesquisadores').classes('text-2xl font-bold text-emerald-900')
-                ui.input(placeholder='Buscar pesquisador...').props('outlined dense icon=search').classes('w-64')
+           # Título simples, sem a barra de busca
+            ui.label('Diretório de Pesquisadores do Sofia').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
             
             # 2. O SISTEMA GERA O VISUAL SOZINHO BASEADO NA LISTA ACIMA
             with ui.column().classes('w-full gap-3'):
@@ -226,7 +225,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-300 transition-colors'):
                         with ui.row().classes('w-full items-center no-wrap gap-4'):
                             
-                            # Ícone
+                            # Ícone do chapéu de formatura
                             ui.avatar('school', color='emerald-50', text_color='emerald-700')
                             
                             # Textos
