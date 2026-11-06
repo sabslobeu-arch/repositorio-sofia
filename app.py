@@ -127,7 +127,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 
                 try:
                     # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
-                    link_google_csv = 'SEU_LINK_GERADO_NO_PASSO_1_AQUI'
+                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv'
                     
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
