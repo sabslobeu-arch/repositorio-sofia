@@ -112,8 +112,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 container_resultados = ui.column().classes('w-full gap-4')
 
             # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
+            # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
             def executar_busca(is_avancada):
-                # Esconde a área e limpa os resultados antigos enquanto pesquisa
                 area_resultados.visible = False
                 container_resultados.clear() 
                 
@@ -127,18 +127,16 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 
                 try:
                     # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
-                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv'
+                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv '
                     
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
                     
-                    # Diagnóstico silencioso para erros
                     colunas = df.columns.tolist()
                     if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
-                        ui.notify('⚠️ ALERTA: O link lido não é um CSV ou a planilha está bloqueada/privada.', color='negative', timeout=8000)
+                        ui.notify('⚠️ ALERTA: O link lido não é um CSV.', color='negative', timeout=8000)
                         return
                     
-                    # Limpeza das colunas
                     planilha_real = []
                     for linha in df.to_dict('records'):
                         linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
@@ -146,7 +144,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                     resultados_encontrados = []
                     
-                    # Lógica de Filtro
                     for doc in planilha_real:
                         d_titulo = str(doc.get('TITULO', '')).lower()
                         d_autores = str(doc.get('AUTORES', '')).lower()
@@ -158,11 +155,9 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi}"
                         passou_no_filtro = True
                         
-                        # 1. Filtro principal
                         if termo_principal and termo_principal not in texto_completo:
                             passou_no_filtro = False
                             
-                        # 2. Filtros Avançados
                         if is_avancada and passou_no_filtro:
                             if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
                                 passou_no_filtro = False
@@ -180,17 +175,19 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         if passou_no_filtro:
                             resultados_encontrados.append(doc)
                     
-                    # Fim da busca! Mostra a área de resultados na tela
                     area_resultados.visible = True
                     
-                    # Desenha os resultados
                     with container_resultados:
                         if len(resultados_encontrados) > 0:
                             ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
                             
                             for doc in resultados_encontrados:
-                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
-                                    with ui.row().classes('w-full justify-between items-start no-wrap gap-4'):
+                                with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
+                                    
+                                    # 1. ÁREA VISÍVEL (Cabeçalho)
+                                    with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:
+                                        
+                                        # Textos da esquerda
                                         with ui.column().classes('flex-grow gap-1'):
                                             with ui.row().classes('gap-2 items-center'):
                                                 ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
@@ -198,14 +195,58 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                             
                                             ui.label(str(doc.get('TITULO', 'Sem Título'))).classes('text-lg font-bold text-emerald-900 leading-tight mt-1')
                                             ui.label(str(doc.get('AUTORES', ''))).classes('text-sm text-slate-600')
-                                            
-                                            programa = str(doc.get('PROGRAMA DA POS', ''))
-                                            if programa and programa.lower() != 'nenhum':
-                                                with ui.row().classes('items-center gap-1 mt-1'):
-                                                    ui.icon('school', size='1rem', color='slate-400')
-                                                    ui.label(programa).classes('text-xs text-slate-500')
                                         
-                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0 transition-colors')
+                                        # Botão e Seta na direita
+                                        with ui.row().classes('shrink-0 items-center gap-4'):
+                                            # O modificador .stop garante que clicar no botão não abra/feche a sanfona
+                                            btn_pdf = ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-4 py-2 transition-colors')
+                                            btn_pdf.on('click.stop', lambda: ui.notify('Link do PDF será conectado aqui!'))
+                                            
+                                            icone_seta = ui.icon('keyboard_arrow_down', size='2rem', color='slate-400').classes('transition-transform duration-300')
+
+                                    # 2. ÁREA OCULTA (Detalhes Complementares)
+                                    with ui.column().classes('w-full px-6 pb-6 pt-2 bg-slate-50/50 border-t border-slate-100 gap-4') as detalhes:
+                                        detalhes.visible = False 
+                                        
+                                        with ui.row().classes('w-full items-start gap-8'):
+                                            # Orientador
+                                            orientador = str(doc.get('ORIENTADOR', '')).strip()
+                                            if orientador:
+                                                with ui.row().classes('items-start gap-2'):
+                                                    ui.icon('person', size='1.2rem', color='emerald-700')
+                                                    with ui.column().classes('gap-0'):
+                                                        ui.label('Orientador').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                        ui.label(orientador).classes('text-sm text-slate-800')
+                                                        
+                                            # Palavras-Chave
+                                            chaves = str(doc.get('PALAVRAS-CHAVES', '')).strip()
+                                            if chaves:
+                                                with ui.row().classes('items-start gap-2'):
+                                                    ui.icon('vpn_key', size='1.2rem', color='emerald-700')
+                                                    with ui.column().classes('gap-0'):
+                                                        ui.label('Palavras-chave').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                        ui.label(chaves).classes('text-sm text-slate-800')
+                                                        
+                                            # Programa
+                                            programa = str(doc.get('PROGRAMA DA POS', '')).strip()
+                                            if programa and programa.lower() != 'nenhum':
+                                                with ui.row().classes('items-start gap-2'):
+                                                    ui.icon('school', size='1.2rem', color='emerald-700')
+                                                    with ui.column().classes('gap-0'):
+                                                        ui.label('Programa').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                        ui.label(programa).classes('text-sm text-slate-800')
+
+                                    # Lógica do clique no cabeçalho
+                                    def criar_acao_toggle(det, icone):
+                                        def acao():
+                                            det.visible = not det.visible
+                                            if det.visible:
+                                                icone.classes(add='rotate-180')
+                                            else:
+                                                icone.classes(remove='rotate-180')
+                                        return acao
+                                        
+                                    cabecalho.on('click', criar_acao_toggle(detalhes, icone_seta))
                         else:
                             with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
                                 ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
