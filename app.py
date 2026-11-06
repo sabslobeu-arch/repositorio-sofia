@@ -46,6 +46,9 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ========================================================
         # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
         # ========================================================
+        # ========================================================
+        # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
+        # ========================================================
         with ui.tab_panel(tab_busca).classes('p-0 pt-2'):
             with ui.column().classes('w-full gap-6'):
                 
@@ -66,28 +69,16 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         # Botão de pesquisa principal que aciona a função de busca
                         ui.button(icon='search', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
 
-                    # Gaveta de Filtros e Busca Combinada (Oculta até clicar em Avançada)
+                    # Gaveta de Filtros (Oculta até clicar em Avançada)
                     with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
                         area_filtros.visible = False 
                         
-                        # --- 1. BUSCA COMBINADA (BOOLEANA) ---
-                        ui.label('Busca Combinada (Operadores Booleanos)').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
-                        
-                        with ui.row().classes('w-full gap-3 items-center'):
-                            operador = ui.select(options=['AND (E)', 'OR (Ou)', 'NOT (Não)'], value='AND (E)', label='Operador').classes('w-32').props('outlined dense')
-                            termo_combinado = ui.input(label='Termo adicional', placeholder='Digite o termo para combinar...').classes('flex-grow').props('outlined dense')
-                            campo_combinado = ui.select(options=['Todos os campos', 'Título', 'Resumo', 'Pesquisador'], value='Todos os campos', label='Pesquisar em').classes('w-48').props('outlined dense')
-
-                        ui.separator().classes('my-1 border-emerald-200/50')
-                        
-                        # --- 2. FILTROS ESPECÍFICOS ---
                         ui.label('Filtros Específicos').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
                         
-                        # Linha 1 de filtros
+                        # Linha 1 de filtros (Apenas Título e Palavras-chave)
                         with ui.row().classes('w-full gap-4'):
                             filtro_titulo = ui.input(label='Título', placeholder='Palavras no título...').classes('flex-grow').props('outlined dense')
-                            filtro_resumo = ui.input(label='Resumo', placeholder='Palavras no resumo...').classes('flex-grow').props('outlined dense')
-                            palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('w-1/4').props('outlined dense')
+                            palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('flex-grow').props('outlined dense')
                             
                         # Linha 2 de filtros
                         with ui.row().classes('w-full gap-4 mt-2'):
@@ -101,11 +92,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         
                         with ui.row().classes('w-full justify-end gap-3 mt-2'):
                             def limpar_filtros():
-                                operador.set_value('AND (E)')
-                                termo_combinado.set_value('')
-                                campo_combinado.set_value('Todos os campos')
                                 filtro_titulo.set_value('')
-                                filtro_resumo.set_value('')
                                 palavras_chave.set_value('')
                                 filtro_pesquisador.set_value('')
                                 programas_pos.set_value('Todos')
@@ -116,18 +103,18 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             # Botão de pesquisa avançada
                             ui.button('Aplicar Busca Avançada', icon='search', on_click=lambda: executar_busca(True)).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
 
-            # --- ÁREA DE RESULTADOS ---
-            ui.label('Resultados da Busca').classes('text-xl font-bold text-emerald-900 mb-4 mt-8 px-2')
-            container_resultados = ui.column().classes('w-full gap-4')
+            # --- ÁREA DE RESULTADOS (INVISÍVEL NO INÍCIO) ---
+            area_resultados = ui.column().classes('w-full mt-4')
+            area_resultados.visible = False 
+            
+            with area_resultados:
+                ui.label('Resultados da Busca').classes('text-xl font-bold text-emerald-900 mb-2 px-2')
+                container_resultados = ui.column().classes('w-full gap-4')
 
-            with container_resultados:
-                with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-slate-100 rounded-2xl border-dashed'):
-                    ui.icon('library_books', size='3rem', color='slate-300').classes('mb-2')
-                    ui.label('Utilize a barra de pesquisa acima para encontrar documentos.').classes('text-slate-500 text-center')
-
-            # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
             # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
             def executar_busca(is_avancada):
+                # Esconde a área e limpa os resultados antigos enquanto pesquisa
+                area_resultados.visible = False
                 container_resultados.clear() 
                 
                 termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
@@ -136,25 +123,22 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     ui.notify('Digite algo para pesquisar.', color='warning')
                     return
                     
-                ui.notify('Conectando ao banco de dados...', color='info')
+                ui.notify('Consultando o acervo...', color='info')
                 
                 try:
-                    # COLE O SEU LINK DO GOOGLE AQUI
-                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv'
+                    # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
+                    link_google_csv = 'SEU_LINK_GERADO_NO_PASSO_1_AQUI'
                     
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
                     
-                    # --- 1. DIAGNÓSTICO DO LINK ---
+                    # Diagnóstico silencioso para erros
                     colunas = df.columns.tolist()
                     if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
                         ui.notify('⚠️ ALERTA: O link lido não é um CSV ou a planilha está bloqueada/privada.', color='negative', timeout=8000)
                         return
                     
-                    ui.notify(f'✅ Conectado! {len(df)} linha(s) encontrada(s).', color='positive')
-                    
-                    # --- 2. LIMPEZA DOS NOMES DAS COLUNAS ---
-                    # Transforma tudo em maiúsculo e tira espaços ocultos para não dar erro
+                    # Limpeza das colunas
                     planilha_real = []
                     for linha in df.to_dict('records'):
                         linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
@@ -164,7 +148,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                     # Lógica de Filtro
                     for doc in planilha_real:
-                        # Extrai os dados usando as colunas em maiúsculo (conforme limpeza acima)
                         d_titulo = str(doc.get('TITULO', '')).lower()
                         d_autores = str(doc.get('AUTORES', '')).lower()
                         d_chaves = str(doc.get('PALAVRAS-CHAVES', '')).lower()
@@ -197,13 +180,16 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         if passou_no_filtro:
                             resultados_encontrados.append(doc)
                     
-                    # --- 3. DESENHA OS RESULTADOS ---
+                    # Fim da busca! Mostra a área de resultados na tela
+                    area_resultados.visible = True
+                    
+                    # Desenha os resultados
                     with container_resultados:
                         if len(resultados_encontrados) > 0:
                             ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
                             
                             for doc in resultados_encontrados:
-                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100'):
+                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
                                     with ui.row().classes('w-full justify-between items-start no-wrap gap-4'):
                                         with ui.column().classes('flex-grow gap-1'):
                                             with ui.row().classes('gap-2 items-center'):
@@ -219,7 +205,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                     ui.icon('school', size='1rem', color='slate-400')
                                                     ui.label(programa).classes('text-xs text-slate-500')
                                         
-                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0')
+                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0 transition-colors')
                         else:
                             with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
                                 ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
@@ -227,7 +213,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 
                 except Exception as e:
                     ui.notify(f'Erro técnico: {str(e)}', color='negative')
-
         # ========================================================
         # ABA 2: NOVA SUBMISSÃO
         # ========================================================
