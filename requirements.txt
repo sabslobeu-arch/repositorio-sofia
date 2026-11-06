@@ -3,3 +3,4 @@ pyinstaller
 requests
 fastapi
 uvicorn
+pandas
