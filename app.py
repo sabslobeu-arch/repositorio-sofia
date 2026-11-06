@@ -42,9 +42,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
 
     with ui.tab_panels(tabs, value=tab_busca).classes('w-full bg-transparent p-0'):
         
-        # ========================================================
-        # ABA 1: ACERVO E BUSCA
-        # ========================================================
+      
         # ========================================================
         # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
         # ========================================================
@@ -128,52 +126,61 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     ui.label('Utilize a barra de pesquisa acima para encontrar documentos.').classes('text-slate-500 text-center')
 
             # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
+            # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
             def executar_busca(is_avancada):
-                # Limpa a tela para os novos resultados
                 container_resultados.clear() 
                 
                 termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
                 
-                # Se for busca simples e não tiver termo, avisa
                 if not is_avancada and not termo_principal:
                     ui.notify('Digite algo para pesquisar.', color='warning')
                     return
                     
-                ui.notify('Consultando o acervo...', color='info')
+                ui.notify('Conectando ao banco de dados...', color='info')
                 
                 try:
-                    # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
-                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv'
+                    # COLE O SEU LINK DO GOOGLE AQUI
+                    link_google_csv = 'SEU_LINK_GERADO_NO_PASSO_1_AQUI'
                     
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
                     
-                    planilha_real = df.to_dict('records')
+                    # --- 1. DIAGNÓSTICO DO LINK ---
+                    colunas = df.columns.tolist()
+                    if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
+                        ui.notify('⚠️ ALERTA: O link lido não é um CSV ou a planilha está bloqueada/privada.', color='negative', timeout=8000)
+                        return
+                    
+                    ui.notify(f'✅ Conectado! {len(df)} linha(s) encontrada(s).', color='positive')
+                    
+                    # --- 2. LIMPEZA DOS NOMES DAS COLUNAS ---
+                    # Transforma tudo em maiúsculo e tira espaços ocultos para não dar erro
+                    planilha_real = []
+                    for linha in df.to_dict('records'):
+                        linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
+                        planilha_real.append(linha_limpa)
                     
                     resultados_encontrados = []
                     
                     # Lógica de Filtro
                     for doc in planilha_real:
-                        # Extrai os dados do doc (tratando minúsculas para facilitar a busca)
+                        # Extrai os dados usando as colunas em maiúsculo (conforme limpeza acima)
                         d_titulo = str(doc.get('TITULO', '')).lower()
                         d_autores = str(doc.get('AUTORES', '')).lower()
-                        d_chaves = str(doc.get('palavras-chaves', '')).lower()
+                        d_chaves = str(doc.get('PALAVRAS-CHAVES', '')).lower()
                         d_doi = str(doc.get('DOI', '')).lower()
                         d_ano = str(doc.get('ANO', '')).lower()
-                        d_programa = str(doc.get('PROGRAMA da pos', '')).lower()
+                        d_programa = str(doc.get('PROGRAMA DA POS', '')).lower()
                         
                         texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi}"
-                        
                         passou_no_filtro = True
                         
-                        # 1. Filtro da barra principal
+                        # 1. Filtro principal
                         if termo_principal and termo_principal not in texto_completo:
                             passou_no_filtro = False
                             
-                        # 2. Filtros Avançados (só aplica se clicar no botão de busca avançada)
+                        # 2. Filtros Avançados
                         if is_avancada and passou_no_filtro:
-                            
-                            # Filtros Diretos
                             if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
                                 passou_no_filtro = False
                             if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves:
@@ -187,57 +194,39 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             if prog_selecionado != 'Todos' and prog_selecionado.lower() not in d_programa:
                                 passou_no_filtro = False
                                 
-                            # (Lógica booleana completa pode ser expandida aqui futuramente)
-                            
                         if passou_no_filtro:
                             resultados_encontrados.append(doc)
                     
-                    # Desenha os resultados na tela
+                    # --- 3. DESENHA OS RESULTADOS ---
                     with container_resultados:
                         if len(resultados_encontrados) > 0:
                             ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
                             
                             for doc in resultados_encontrados:
-                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100'):
                                     with ui.row().classes('w-full justify-between items-start no-wrap gap-4'):
-                                        
                                         with ui.column().classes('flex-grow gap-1'):
                                             with ui.row().classes('gap-2 items-center'):
-                                                # Usa o get() para evitar erros caso a coluna não exista
                                                 ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
                                                 ui.label(str(doc.get('ANO', ''))).classes('text-sm text-slate-500 font-medium')
                                             
                                             ui.label(str(doc.get('TITULO', 'Sem Título'))).classes('text-lg font-bold text-emerald-900 leading-tight mt-1')
                                             ui.label(str(doc.get('AUTORES', ''))).classes('text-sm text-slate-600')
                                             
-                                            programa = str(doc.get('PROGRAMA da pos', ''))
+                                            programa = str(doc.get('PROGRAMA DA POS', ''))
                                             if programa and programa.lower() != 'nenhum':
                                                 with ui.row().classes('items-center gap-1 mt-1'):
                                                     ui.icon('school', size='1rem', color='slate-400')
                                                     ui.label(programa).classes('text-xs text-slate-500')
                                         
-                                        # Futuramente ligaremos este botão ao arquivo
-                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0 transition-colors')
-                        
+                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0')
                         else:
                             with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
                                 ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
                                 ui.label('Nenhum documento encontrado.').classes('text-red-500 text-center font-bold')
                 
                 except Exception as e:
-                    ui.notify(f'Erro ao conectar com a base de dados: {str(e)}', color='negative')
-                # ÁREA DE RESULTADOS
-                with ui.column().classes('w-full gap-4 mt-2'):
-                    ui.label('Acervo Recente').classes('text-lg font-bold text-emerald-900 ml-2')
-                    
-                    with ui.card().classes('w-full p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 border-l-4 border-l-emerald-600 gap-2 hover:bg-slate-50 transition-colors cursor-pointer'):
-                        ui.label('Avaliação de estratégias de busca em bases de dados biomédicas').classes('text-lg font-bold text-slate-900')
-                        ui.label('Autores: Silva, M. et al. • Ano: 2026 • DOI: 10.1016/j.jbi.2026.100').classes('text-xs text-slate-400 font-medium')
-                        ui.label('Resumo descritivo focado na clareza visual e na legibilidade dos metadados extraídos automaticamente do artigo científico.').classes('text-sm text-slate-600 leading-relaxed mb-2')
-                        
-                        with ui.row().classes('gap-2'):
-                            ui.badge('MeSH: Information Retrieval', color='green').classes('text-xs')
-                            ui.badge('Evidence-Based Practice', color='green').classes('text-xs')
+                    ui.notify(f'Erro técnico: {str(e)}', color='negative')
 
         # ========================================================
         # ABA 2: NOVA SUBMISSÃO
