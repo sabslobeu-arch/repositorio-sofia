@@ -1,5 +1,6 @@
 import os
 import pandas
+import pandas as pd 
 from nicegui import ui
 import urllib.request 
 import json
@@ -44,6 +45,9 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ========================================================
         # ABA 1: ACERVO E BUSCA
         # ========================================================
+        # ========================================================
+        # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
+        # ========================================================
         with ui.tab_panel(tab_busca).classes('p-0 pt-2'):
             with ui.column().classes('w-full gap-6'):
                 
@@ -61,7 +65,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
 
                         btn_avancada = ui.button('Avançada', icon='tune', on_click=toggle_filtros).classes('bg-emerald-50 text-emerald-900 hover:bg-emerald-100 rounded-xl px-4 shadow-none border border-emerald-200 mr-2')
                         
-                        ui.button(icon='search', on_click=lambda: ui.notify(f'Buscando por: {busca_input.value}')).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
+                        # Botão de pesquisa principal que aciona a função de busca
+                        ui.button(icon='search', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
 
                     # Gaveta de Filtros e Busca Combinada (Oculta até clicar em Avançada)
                     with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
@@ -109,8 +114,118 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 filtro_ano.set_value('')
 
                             ui.button('Limpar Filtros', on_click=limpar_filtros).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
-                            ui.button('Aplicar Busca Avançada', icon='search').classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
+                            
+                            # Botão de pesquisa avançada
+                            ui.button('Aplicar Busca Avançada', icon='search', on_click=lambda: executar_busca(True)).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
 
+            # --- ÁREA DE RESULTADOS ---
+            ui.label('Resultados da Busca').classes('text-xl font-bold text-emerald-900 mb-4 mt-8 px-2')
+            container_resultados = ui.column().classes('w-full gap-4')
+
+            with container_resultados:
+                with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-slate-100 rounded-2xl border-dashed'):
+                    ui.icon('library_books', size='3rem', color='slate-300').classes('mb-2')
+                    ui.label('Utilize a barra de pesquisa acima para encontrar documentos.').classes('text-slate-500 text-center')
+
+            # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
+            def executar_busca(is_avancada):
+                # Limpa a tela para os novos resultados
+                container_resultados.clear() 
+                
+                termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
+                
+                # Se for busca simples e não tiver termo, avisa
+                if not is_avancada and not termo_principal:
+                    ui.notify('Digite algo para pesquisar.', color='warning')
+                    return
+                    
+                ui.notify('Consultando o acervo...', color='info')
+                
+                try:
+                    # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
+                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv'
+                    
+                    df = pd.read_csv(link_google_csv)
+                    df = df.fillna('') 
+                    
+                    planilha_real = df.to_dict('records')
+                    
+                    resultados_encontrados = []
+                    
+                    # Lógica de Filtro
+                    for doc in planilha_real:
+                        # Extrai os dados do doc (tratando minúsculas para facilitar a busca)
+                        d_titulo = str(doc.get('TITULO', '')).lower()
+                        d_autores = str(doc.get('AUTORES', '')).lower()
+                        d_chaves = str(doc.get('palavras-chaves', '')).lower()
+                        d_doi = str(doc.get('DOI', '')).lower()
+                        d_ano = str(doc.get('ANO', '')).lower()
+                        d_programa = str(doc.get('PROGRAMA da pos', '')).lower()
+                        
+                        texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi}"
+                        
+                        passou_no_filtro = True
+                        
+                        # 1. Filtro da barra principal
+                        if termo_principal and termo_principal not in texto_completo:
+                            passou_no_filtro = False
+                            
+                        # 2. Filtros Avançados (só aplica se clicar no botão de busca avançada)
+                        if is_avancada and passou_no_filtro:
+                            
+                            # Filtros Diretos
+                            if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
+                                passou_no_filtro = False
+                            if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves:
+                                passou_no_filtro = False
+                            if filtro_pesquisador.value and str(filtro_pesquisador.value).lower().strip() not in d_autores:
+                                passou_no_filtro = False
+                            if filtro_ano.value and str(filtro_ano.value).lower().strip() not in d_ano:
+                                passou_no_filtro = False
+                                
+                            prog_selecionado = programas_pos.value
+                            if prog_selecionado != 'Todos' and prog_selecionado.lower() not in d_programa:
+                                passou_no_filtro = False
+                                
+                            # (Lógica booleana completa pode ser expandida aqui futuramente)
+                            
+                        if passou_no_filtro:
+                            resultados_encontrados.append(doc)
+                    
+                    # Desenha os resultados na tela
+                    with container_resultados:
+                        if len(resultados_encontrados) > 0:
+                            ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
+                            
+                            for doc in resultados_encontrados:
+                                with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-shadow'):
+                                    with ui.row().classes('w-full justify-between items-start no-wrap gap-4'):
+                                        
+                                        with ui.column().classes('flex-grow gap-1'):
+                                            with ui.row().classes('gap-2 items-center'):
+                                                # Usa o get() para evitar erros caso a coluna não exista
+                                                ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
+                                                ui.label(str(doc.get('ANO', ''))).classes('text-sm text-slate-500 font-medium')
+                                            
+                                            ui.label(str(doc.get('TITULO', 'Sem Título'))).classes('text-lg font-bold text-emerald-900 leading-tight mt-1')
+                                            ui.label(str(doc.get('AUTORES', ''))).classes('text-sm text-slate-600')
+                                            
+                                            programa = str(doc.get('PROGRAMA da pos', ''))
+                                            if programa and programa.lower() != 'nenhum':
+                                                with ui.row().classes('items-center gap-1 mt-1'):
+                                                    ui.icon('school', size='1rem', color='slate-400')
+                                                    ui.label(programa).classes('text-xs text-slate-500')
+                                        
+                                        # Futuramente ligaremos este botão ao arquivo
+                                        ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-6 py-2 shrink-0 transition-colors')
+                        
+                        else:
+                            with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
+                                ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
+                                ui.label('Nenhum documento encontrado.').classes('text-red-500 text-center font-bold')
+                
+                except Exception as e:
+                    ui.notify(f'Erro ao conectar com a base de dados: {str(e)}', color='negative')
                 # ÁREA DE RESULTADOS
                 with ui.column().classes('w-full gap-4 mt-2'):
                     ui.label('Acervo Recente').classes('text-lg font-bold text-emerald-900 ml-2')
