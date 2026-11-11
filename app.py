@@ -75,10 +75,11 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         
                         ui.label('Filtros Específicos').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
                         
-                        # Linha 1 de filtros (Apenas Título e Palavras-chave)
+                        # Linha 1 de filtros (Título, Palavras-chave e Metodologia)
                         with ui.row().classes('w-full gap-4'):
                             filtro_titulo = ui.input(label='Título', placeholder='Palavras no título...').classes('flex-grow').props('outlined dense')
                             palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('flex-grow').props('outlined dense')
+                            filtro_metodologia = ui.input(label='Metodologia', placeholder='Ex: revisão, estudo de caso...').classes('flex-grow').props('outlined dense')
                             
                         # Linha 2 de filtros
                         with ui.row().classes('w-full gap-4 mt-2'):
@@ -94,6 +95,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             def limpar_filtros():
                                 filtro_titulo.set_value('')
                                 palavras_chave.set_value('')
+                                filtro_metodologia.set_value('')
                                 filtro_pesquisador.set_value('')
                                 programas_pos.set_value('Todos')
                                 filtro_ano.set_value('')
@@ -112,8 +114,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 container_resultados = ui.column().classes('w-full gap-4')
 
             # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
-            # --- A FUNÇÃO QUE LÊ O GOOGLE E FAZ A BUSCA ---
             def executar_busca(is_avancada):
+                # Esconde a área e limpa os resultados antigos enquanto pesquisa
                 area_resultados.visible = False
                 container_resultados.clear() 
                 
@@ -132,11 +134,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
                     
+                    # Diagnóstico silencioso para erros
                     colunas = df.columns.tolist()
                     if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
-                        ui.notify('⚠️ ALERTA: O link lido não é um CSV.', color='negative', timeout=8000)
+                        ui.notify('⚠️ ALERTA: O link lido não é um CSV ou a planilha está bloqueada/privada.', color='negative', timeout=8000)
                         return
                     
+                    # Limpeza das colunas
                     planilha_real = []
                     for linha in df.to_dict('records'):
                         linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
@@ -144,6 +148,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                     resultados_encontrados = []
                     
+                    # Lógica de Filtro
                     for doc in planilha_real:
                         d_titulo = str(doc.get('TITULO', '')).lower()
                         d_autores = str(doc.get('AUTORES', '')).lower()
@@ -151,17 +156,23 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         d_doi = str(doc.get('DOI', '')).lower()
                         d_ano = str(doc.get('ANO', '')).lower()
                         d_programa = str(doc.get('PROGRAMA DA POS', '')).lower()
+                        d_metodologia = str(doc.get('TIPO DE PESQUISA', '')).lower()
                         
-                        texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi}"
+                        # Adicionamos a metodologia na busca de texto completo
+                        texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia}"
                         passou_no_filtro = True
                         
+                        # 1. Filtro principal
                         if termo_principal and termo_principal not in texto_completo:
                             passou_no_filtro = False
                             
+                        # 2. Filtros Avançados
                         if is_avancada and passou_no_filtro:
                             if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
                                 passou_no_filtro = False
                             if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves:
+                                passou_no_filtro = False
+                            if filtro_metodologia.value and str(filtro_metodologia.value).lower().strip() not in d_metodologia:
                                 passou_no_filtro = False
                             if filtro_pesquisador.value and str(filtro_pesquisador.value).lower().strip() not in d_autores:
                                 passou_no_filtro = False
@@ -175,8 +186,10 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         if passou_no_filtro:
                             resultados_encontrados.append(doc)
                     
+                    # Fim da busca! Mostra a área de resultados na tela
                     area_resultados.visible = True
                     
+                    # Desenha os resultados
                     with container_resultados:
                         if len(resultados_encontrados) > 0:
                             ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
@@ -184,10 +197,9 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             for doc in resultados_encontrados:
                                 with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
                                     
-                                    # 1. ÁREA VISÍVEL (Cabeçalho)
+                                    # 1. ÁREA VISÍVEL (Cabeçalho Clicável)
                                     with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:
                                         
-                                        # Textos da esquerda
                                         with ui.column().classes('flex-grow gap-1'):
                                             with ui.row().classes('gap-2 items-center'):
                                                 ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
@@ -198,7 +210,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                         
                                         # Botão e Seta na direita
                                         with ui.row().classes('shrink-0 items-center gap-4'):
-                                            # O modificador .stop garante que clicar no botão não abra/feche a sanfona
                                             btn_pdf = ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-4 py-2 transition-colors')
                                             btn_pdf.on('click.stop', lambda: ui.notify('Link do PDF será conectado aqui!'))
                                             
@@ -226,6 +237,15 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                     with ui.column().classes('gap-0'):
                                                         ui.label('Palavras-chave').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
                                                         ui.label(chaves).classes('text-sm text-slate-800')
+
+                                            # Metodologia / Tipo de Pesquisa
+                                            metodologia = str(doc.get('TIPO DE PESQUISA', '')).strip()
+                                            if metodologia:
+                                                with ui.row().classes('items-start gap-2'):
+                                                    ui.icon('science', size='1.2rem', color='emerald-700')
+                                                    with ui.column().classes('gap-0'):
+                                                        ui.label('Metodologia').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                        ui.label(metodologia).classes('text-sm text-slate-800')
                                                         
                                             # Programa
                                             programa = str(doc.get('PROGRAMA DA POS', '')).strip()
@@ -236,7 +256,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                         ui.label('Programa').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
                                                         ui.label(programa).classes('text-sm text-slate-800')
 
-                                    # Lógica do clique no cabeçalho
+                                    # Lógica do clique (Abre/Fecha a sanfona)
                                     def criar_acao_toggle(det, icone):
                                         def acao():
                                             det.visible = not det.visible
