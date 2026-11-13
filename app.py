@@ -336,12 +336,69 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ========================================================
         # ABA 4: EQUIPE DE ENSINO
         # ========================================================
-        with ui.tab_panel(tab_equipe).classes('p-0 pt-2'):
-            with ui.card().classes('w-full p-8 bg-white rounded-2xl shadow-sm border border-emerald-100 text-center'):
-                ui.icon('groups', size='4rem', color='emerald').classes('mx-auto mb-4')
-                ui.label('Equipe de Ensino').classes('text-2xl font-bold text-emerald-900')
-                ui.label('Página em desenvolvimento. Em breve conheceremos o corpo docente.').classes('text-slate-500 mt-2')
+        # ========================================================
+        # ABA: PESQUISADORES / EQUIPE DE ENSINO
+        # ========================================================
+        with ui.tab_panel(tab_equipe).classes('p-0 pt-2 bg-slate-50/30'):
+            ui.label('Pesquisadores e Corpo Docente').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
 
+            # O 'flex-wrap' garante que os cards fiquem lado a lado e desçam de linha se faltar espaço
+            with ui.row().classes('w-full gap-6 flex-wrap justify-start px-2'):
+                
+                # --- CARD PESQUISADOR 1 ---
+                with ui.card().classes('w-[350px] bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col gap-4'):
+                    
+                    # Cabeçalho: Foto/Ícone e Nome
+                    with ui.row().classes('items-center gap-4 no-wrap'):
+                        ui.avatar('science', size='3.5rem', color='emerald-100', text_color='emerald-700').classes('shrink-0')
+                        with ui.column().classes('gap-0'):
+                            ui.label('Nome do Pesquisador').classes('text-lg font-bold text-slate-800 leading-tight')
+                            ui.label('Doutorado em Saúde Pública').classes('text-xs text-emerald-700 font-bold uppercase tracking-wider mt-1')
+                    
+                    # Mini-Currículo (Estilo Lattes)
+                    ui.label(
+                        'Enfermeiro(a) com atuação em humanização do parto. '
+                        'Líder do Grupo de Pesquisa em Saúde Materno-Infantil. '
+                        'Possui experiência na área de Neonatologia e Cuidados Paliativos...'
+                    ).classes('text-sm text-slate-600 leading-relaxed')
+                    
+                    ui.separator().classes('bg-slate-100')
+                    
+                    # Última Publicação (Previsão para o futuro)
+                    with ui.column().classes('gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100'):
+                        ui.label('Última Pesquisa Publicada').classes('text-[10px] uppercase font-bold text-slate-400 tracking-wide')
+                        with ui.row().classes('items-start gap-2 no-wrap'):
+                            ui.icon('article', size='1rem', color='emerald-600').classes('mt-1 shrink-0')
+                            ui.label('Práticas Integrativas no Trabalho de Parto (2025)').classes('text-xs text-slate-700 font-medium italic')
+                        
+                    # Botão de Ação
+                    ui.button('Ver Currículo Lattes', icon='open_in_new').classes('w-full mt-auto bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white shadow-none border border-emerald-200 rounded-lg transition-colors')
+
+                # --- CARD PESQUISADOR 2 ---
+                with ui.card().classes('w-[350px] bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col gap-4'):
+                    
+                    with ui.row().classes('items-center gap-4 no-wrap'):
+                        ui.avatar('biotech', size='3.5rem', color='emerald-100', text_color='emerald-700').classes('shrink-0')
+                        with ui.column().classes('gap-0'):
+                            ui.label('Nome do Pesquisador 2').classes('text-lg font-bold text-slate-800 leading-tight')
+                            ui.label('Mestre em Enfermagem').classes('text-xs text-emerald-700 font-bold uppercase tracking-wider mt-1')
+                    
+                    ui.label(
+                        'Especialista em Aleitamento Materno. Atua na linha de pesquisa de '
+                        'desenvolvimento neuropsicomotor de prematuros extremos...'
+                    ).classes('text-sm text-slate-600 leading-relaxed')
+                    
+                    ui.separator().classes('bg-slate-100')
+                    
+                    with ui.column().classes('gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100'):
+                        ui.label('Última Pesquisa Publicada').classes('text-[10px] uppercase font-bold text-slate-400 tracking-wide')
+                        with ui.row().classes('items-start gap-2 no-wrap'):
+                            ui.icon('article', size='1rem', color='emerald-600').classes('mt-1 shrink-0')
+                            ui.label('Impacto do Método Canguru no ganho de peso (2026)').classes('text-xs text-slate-700 font-medium italic')
+                        
+                    ui.button('Ver Currículo Lattes', icon='open_in_new').classes('w-full mt-auto bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white shadow-none border border-emerald-200 rounded-lg transition-colors')
+
+                # Para adicionar mais pesquisadores, basta copiar o bloco "with ui.card()..." inteiro e colar logo abaixo!
        
         # ========================================================
         # ABA 5: LISTA DE PESQUISADORES
