@@ -76,28 +76,48 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('flex-grow').props('outlined dense')
                             filtro_metodologia = ui.input(label='Metodologia', placeholder='Ex: revisão, estudo de caso...').classes('flex-grow').props('outlined dense')
                             
-                        with ui.row().classes('w-full gap-4 mt-2'):
+                        # LINHA DOS PROGRAMAS (COM LÓGICA DE CASCATA)
+                        with ui.row().classes('w-full gap-4 mt-2 items-center'):
                             filtro_pesquisador = ui.input(label='Pesquisador', placeholder='Nome do autor...').classes('flex-grow').props('outlined dense')
                             
-                            # --- LISTA DE PROGRAMAS ATUALIZADA ---
-                            programas_pos = ui.select(
+                            programa_principal = ui.select(
                                 label='Programa da Pós', 
                                 options=[
                                     'Todos', 
                                     'Residência Médica em Ginecologia e Obstetrícia', 
                                     'Residência Médica em Neonatologia', 
                                     'Residência em Enfermagem e Obstetrícia', 
-                                    'Residência Multiprofissional em Neonatologia',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Psicologia)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Terapia Ocupacional)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Serviço Social)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Fonoaudiologia)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Nutrição)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Enfermagem)',
-                                    'Residência Multiprofissional em Neonatologia (Ênfase em Farmácia)'
+                                    'Residência Multiprofissional em Neonatologia'
                                 ], 
                                 value='Todos'
-                            ).classes('w-1/3').props('outlined dense')
+                            ).classes('flex-grow').props('outlined dense')
+                            
+                            # Caixinha de Ênfase (Invisível por padrão)
+                            enfase_multi = ui.select(
+                                label='Selecione a Ênfase', 
+                                options=[
+                                    'Todas as Ênfases',
+                                    'Psicologia',
+                                    'Terapia Ocupacional',
+                                    'Serviço Social',
+                                    'Fonoaudiologia',
+                                    'Nutrição',
+                                    'Enfermagem',
+                                    'Farmácia'
+                                ], 
+                                value='Todas as Ênfases'
+                            ).classes('w-1/4').props('outlined dense')
+                            enfase_multi.visible = False
+                            
+                            # Lógica para mostrar/esconder a Ênfase
+                            def atualizar_enfase(e):
+                                if e.value == 'Residência Multiprofissional em Neonatologia':
+                                    enfase_multi.visible = True
+                                else:
+                                    enfase_multi.visible = False
+                                    enfase_multi.set_value('Todas as Ênfases')
+                                    
+                            programa_principal.on_value_change(atualizar_enfase)
                             
                             filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-32').props('outlined dense')
                         
@@ -107,7 +127,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 palavras_chave.set_value('')
                                 filtro_metodologia.set_value('')
                                 filtro_pesquisador.set_value('')
-                                programas_pos.set_value('Todos')
+                                programa_principal.set_value('Todos')
+                                enfase_multi.set_value('Todas as Ênfases')
                                 filtro_ano.set_value('')
 
                             ui.button('Limpar Filtros', on_click=limpar_filtros).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
@@ -180,9 +201,19 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             if filtro_ano.value and str(filtro_ano.value).lower().strip() not in d_ano:
                                 passou_no_filtro = False
                                 
-                            prog_selecionado = programas_pos.value
-                            if prog_selecionado != 'Todos' and prog_selecionado.lower() not in d_programa:
-                                passou_no_filtro = False
+                            # --- LÓGICA DE RECONSTRUÇÃO DO NOME DO PROGRAMA ---
+                            prog_selecionado = programa_principal.value
+                            enf_selecionada = enfase_multi.value
+                            
+                            if prog_selecionado != 'Todos':
+                                texto_busca_programa = prog_selecionado.lower()
+                                
+                                # Se a pessoa escolheu a multiprofissional E uma ênfase específica, recriamos o texto igual à planilha
+                                if prog_selecionado == 'Residência Multiprofissional em Neonatologia' and enf_selecionada != 'Todas as Ênfases':
+                                    texto_busca_programa = f"residência multiprofissional em neonatologia (ênfase em {enf_selecionada.lower()})"
+                                
+                                if texto_busca_programa not in d_programa:
+                                    passou_no_filtro = False
                                 
                         if passou_no_filtro:
                             resultados_encontrados.append(doc)
@@ -234,7 +265,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                             metodologia = str(doc.get('TIPO DE PESQUISA', '')).strip()
                                             if metodologia:
                                                 with ui.row().classes('items-start gap-2'):
-                                                    # --- ÍCONE ALTERADO PARA LUPA (search) ---
                                                     ui.icon('search', size='1.2rem', color='emerald-700')
                                                     with ui.column().classes('gap-0'):
                                                         ui.label('Metodologia').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
