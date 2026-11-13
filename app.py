@@ -56,7 +56,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     with ui.row().classes('w-full items-center no-wrap pl-4'):
                         
                         ui.icon('search', size='1.5rem', color='emerald-600')
-                        busca_input = ui.input(placeholder='Pesquisar título, autor, palavras-chave...').classes('flex-grow px-2 text-lg').props('borderless')
+                        busca_input = ui.input(placeholder='Digite seu termo de busca').classes('flex-grow px-2 text-lg').props('borderless')
                         
                         # Botão que abre a caixa flutuante (Pop-up)
                         ui.button('Filtros', icon='tune', on_click=lambda: modal_filtros.open()).classes('text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-full px-4 py-2 shadow-none font-bold mr-2')
