@@ -337,115 +337,68 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ABA 4: EQUIPE DE ENSINO
         # ========================================================
         # ========================================================
-        # ABA: PESQUISADORES / EQUIPE DE ENSINO
+        # ABA 3: EQUIPE DE ENSINO (VAZIA POR ENQUANTO)
         # ========================================================
-        with ui.tab_panel(tab_equipe).classes('p-0 pt-2 bg-slate-50/30'):
-            ui.label('Pesquisadores e Corpo Docente').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
-
-            # O 'flex-wrap' garante que os cards fiquem lado a lado e desçam de linha se faltar espaço
-            with ui.row().classes('w-full gap-6 flex-wrap justify-start px-2'):
-                
-                # --- CARD PESQUISADOR 1 ---
-                with ui.card().classes('w-[350px] bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col gap-4'):
-                    
-                    # Cabeçalho: Foto/Ícone e Nome
-                    with ui.row().classes('items-center gap-4 no-wrap'):
-                        ui.avatar('science', size='3.5rem', color='emerald-100', text_color='emerald-700').classes('shrink-0')
-                        with ui.column().classes('gap-0'):
-                            ui.label('Nome do Pesquisador').classes('text-lg font-bold text-slate-800 leading-tight')
-                            ui.label('Doutorado em Saúde Pública').classes('text-xs text-emerald-700 font-bold uppercase tracking-wider mt-1')
-                    
-                    # Mini-Currículo (Estilo Lattes)
-                    ui.label(
-                        'Enfermeiro(a) com atuação em humanização do parto. '
-                        'Líder do Grupo de Pesquisa em Saúde Materno-Infantil. '
-                        'Possui experiência na área de Neonatologia e Cuidados Paliativos...'
-                    ).classes('text-sm text-slate-600 leading-relaxed')
-                    
-                    ui.separator().classes('bg-slate-100')
-                    
-                    # Última Publicação (Previsão para o futuro)
-                    with ui.column().classes('gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100'):
-                        ui.label('Última Pesquisa Publicada').classes('text-[10px] uppercase font-bold text-slate-400 tracking-wide')
-                        with ui.row().classes('items-start gap-2 no-wrap'):
-                            ui.icon('article', size='1rem', color='emerald-600').classes('mt-1 shrink-0')
-                            ui.label('Práticas Integrativas no Trabalho de Parto (2025)').classes('text-xs text-slate-700 font-medium italic')
-                        
-                    # Botão de Ação
-                    ui.button('Ver Currículo Lattes', icon='open_in_new').classes('w-full mt-auto bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white shadow-none border border-emerald-200 rounded-lg transition-colors')
-
-                # --- CARD PESQUISADOR 2 ---
-                with ui.card().classes('w-[350px] bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col gap-4'):
-                    
-                    with ui.row().classes('items-center gap-4 no-wrap'):
-                        ui.avatar('biotech', size='3.5rem', color='emerald-100', text_color='emerald-700').classes('shrink-0')
-                        with ui.column().classes('gap-0'):
-                            ui.label('Nome do Pesquisador 2').classes('text-lg font-bold text-slate-800 leading-tight')
-                            ui.label('Mestre em Enfermagem').classes('text-xs text-emerald-700 font-bold uppercase tracking-wider mt-1')
-                    
-                    ui.label(
-                        'Especialista em Aleitamento Materno. Atua na linha de pesquisa de '
-                        'desenvolvimento neuropsicomotor de prematuros extremos...'
-                    ).classes('text-sm text-slate-600 leading-relaxed')
-                    
-                    ui.separator().classes('bg-slate-100')
-                    
-                    with ui.column().classes('gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100'):
-                        ui.label('Última Pesquisa Publicada').classes('text-[10px] uppercase font-bold text-slate-400 tracking-wide')
-                        with ui.row().classes('items-start gap-2 no-wrap'):
-                            ui.icon('article', size='1rem', color='emerald-600').classes('mt-1 shrink-0')
-                            ui.label('Impacto do Método Canguru no ganho de peso (2026)').classes('text-xs text-slate-700 font-medium italic')
-                        
-                    ui.button('Ver Currículo Lattes', icon='open_in_new').classes('w-full mt-auto bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white shadow-none border border-emerald-200 rounded-lg transition-colors')
-
-                # Para adicionar mais pesquisadores, basta copiar o bloco "with ui.card()..." inteiro e colar logo abaixo!
+        with ui.tab_panel(tab_equipe).classes('p-4 w-full flex items-center justify-center h-64'):
+            ui.label('Diretório de pesquisadores em construção...').classes('text-slate-400 italic')
        
         # ========================================================
         # ABA 5: LISTA DE PESQUISADORES
         # ========================================================
-        with ui.tab_panel(tab_pesquisadores).classes('p-0 pt-2'):
+        # ========================================================
+        # ABA: PESQUISADORES / EQUIPE DE ENSINO
+        # ========================================================
+        with ui.tab_panel(tab_pesquisadores).classes('p-4 w-full bg-slate-50/30'):
             
-            # 1. PREENCHA OS DADOS AQUI (Adicione quantas linhas precisar)
+            # 1. SEUS DADOS REAIS
             dados_pesquisadores = [
                 {'nome': 'Andrezza Lopes', 'formacao': 'Médica GO', 'titulacao': 'Doutora'},
                 {'nome': 'Aryanne Gabriele Policarpo', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
                 {'nome': 'Camilla Lorraine Moura Dias', 'formacao': 'Enfermeira Neonatal', 'titulacao': 'Mestre'},
-                {'nome': 'Cintia Ribeiro Santos ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
-                {'nome': 'Cristiane Alessandra da Silva  ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
-                {'nome': 'Danubia Mariane Barbosa Jardim de Carvalho ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Doutora'},
-                {'nome': 'Debora Lucas Viana Goncalves ', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Cintia Ribeiro Santos', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Cristiane Alessandra da Silva', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
+                {'nome': 'Danubia Mariane Barbosa Jardim de Carvalho', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Doutora'},
+                {'nome': 'Debora Lucas Viana Goncalves', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
                 {'nome': 'Elisa Lima e Silva', 'formacao': 'Enfermeira Intensivista', 'titulacao': 'Mestre'},
-                {'nome': 'Flavia A F L. Silva ', 'formacao': 'Fonoaudiologa', 'titulacao': 'Doutora'},
-                {'nome': 'Lorena Azevedo Correia', 'formacao': 'Terapeuta ocupacional', 'titulacao': 'Mestre'},
+                {'nome': 'Flavia A F L. Silva', 'formacao': 'Fonoaudióloga', 'titulacao': 'Doutora'},
+                {'nome': 'Lorena Azevedo Correia', 'formacao': 'Terapeuta Ocupacional', 'titulacao': 'Mestre'},
                 {'nome': 'Lorena Oliveira Nogueira', 'formacao': 'Nutricionista', 'titulacao': 'Mestre'},
-                {'nome': 'Marília A. R. Oliveira Santos', 'formacao': 'Assistente Social ', 'titulacao': 'Mestre'},
+                {'nome': 'Marília A. R. Oliveira Santos', 'formacao': 'Assistente Social', 'titulacao': 'Mestre'},
                 {'nome': 'Patrícia Rodrigues Da Costa', 'formacao': 'Terapeuta Ocupacional', 'titulacao': 'Mestre'},
                 {'nome': 'Regina Célia Coelho de Moraes', 'formacao': 'Nutricionista', 'titulacao': 'Mestre'},
                 {'nome': 'Solange Clessêncio Ferreira Diniz', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Doutora'},
                 {'nome': 'Tatiana Coelho Lopes', 'formacao': 'Fisioterapeuta', 'titulacao': 'Pós-Doutora'},
                 {'nome': 'Barbara Barroso Siqueira', 'formacao': 'Enfermeira Obstétrica', 'titulacao': 'Mestre'},
-                {'nome': 'Caroline Reis ', 'formacao': 'Médica', 'titulacao': 'Mestre'},
-                {'nome': 'Tânia Antunes Carvalho  ', 'formacao': 'Médica', 'titulacao': 'Mestre'},
-                {'nome': 'Diego Alcântara Alves  ', 'formacao': 'Enfermeiro Obstétrico', 'titulacao': 'Mestre'},
+                {'nome': 'Caroline Reis', 'formacao': 'Médica', 'titulacao': 'Mestre'},
+                {'nome': 'Tânia Antunes Carvalho', 'formacao': 'Médica', 'titulacao': 'Mestre'},
+                {'nome': 'Diego Alcântara Alves', 'formacao': 'Enfermeiro Obstétrico', 'titulacao': 'Mestre'},
             ]
 
-           # Título simples, sem a barra de busca
+            # Título da seção
             ui.label('Diretório de Pesquisadores do Sofia').classes('text-2xl font-bold text-emerald-900 mb-6 px-2')
             
-            # 2. O SISTEMA GERA O VISUAL SOZINHO BASEADO NA LISTA ACIMA
-            with ui.column().classes('w-full gap-3'):
+            # 2. GERAÇÃO AUTOMÁTICA DOS CARDS LADO A LADO
+            # O ui.row() com flex-wrap é o grande segredo para o modo grade (grid)
+            with ui.row().classes('w-full flex flex-row flex-wrap gap-6 justify-start px-2'):
+                
                 for pesq in dados_pesquisadores:
-                    with ui.card().classes('w-full p-4 bg-white rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-300 transition-colors'):
+                    # Limitamos a largura do card para w-[320px] para caberem vários na tela
+                    with ui.card().classes('w-[320px] p-6 bg-white rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md transition-all flex flex-col gap-4'):
+                        
                         with ui.row().classes('w-full items-center no-wrap gap-4'):
                             
-                            # Ícone do chapéu de formatura
-                            ui.avatar('school', color='emerald-50', text_color='emerald-700')
+                            # Ícone com tamanho maior para dar destaque
+                            ui.avatar('school', size='3.5rem', color='emerald-50', text_color='emerald-700').classes('shrink-0')
                             
                             # Textos
                             with ui.column().classes('gap-0'):
-                                ui.label(pesq['nome']).classes('text-base font-bold text-emerald-900')
-                                ui.label(pesq['titulacao']).classes('text-xs font-bold text-emerald-700 uppercase tracking-wide')
-                                ui.label(f"Formação: {pesq['formacao']}").classes('text-sm text-slate-600 mt-1')
+                                ui.label(pesq['nome']).classes('text-base font-bold text-slate-800 leading-tight')
+                                ui.label(pesq['titulacao']).classes('text-xs font-bold text-emerald-700 uppercase tracking-wide mt-1')
+                                
+                        # Formação colocada de forma elegante
+                        with ui.row().classes('items-center gap-2 mt-2'):
+                            ui.icon('work_outline', size='1.1rem', color='slate-400')
+                            ui.label(pesq['formacao']).classes('text-sm text-slate-600 font-medium')
 
         # ========================================================
         # ABA 6: ENTRE EM CONTATO
