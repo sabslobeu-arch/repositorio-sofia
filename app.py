@@ -240,10 +240,18 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                             with ui.row().classes('shrink-0 items-center gap-4'):
                                                 btn_pdf = ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-4 py-2 transition-colors')
                                                 
-                                                # >>> LÓGICA ATUALIZADA DO PDF (MUITO IMPORTANTE) <<<
+                                                # >>> LÓGICA DE DOWNLOAD DIRETO DO PDF <<<
                                                 link_do_arquivo = str(doc.get('LINK PDF', '')).strip()
+                                                
                                                 if link_do_arquivo:
-                                                    btn_pdf.on('click.stop', lambda url=link_do_arquivo: ui.navigate.to(url, new_tab=True))
+                                                    link_download = link_do_arquivo
+                                                    if 'drive.google.com' in link_do_arquivo and '/d/' in link_do_arquivo:
+                                                        match = re.search(r'/d/([a-zA-Z0-9_-]+)', link_do_arquivo)
+                                                        if match:
+                                                            codigo_arquivo = match.group(1)
+                                                            link_download = f"https://drive.google.com/uc?export=download&id={codigo_arquivo}"
+                                                    
+                                                    btn_pdf.on('click.stop', lambda url=link_download: ui.navigate.to(url))
                                                 else:
                                                     btn_pdf.props('disable')
                                                     btn_pdf.classes(remove='bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border-emerald-200')
