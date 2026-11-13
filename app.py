@@ -46,41 +46,52 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
         # ========================================================
         # ========================================================
-        # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
+        # ABA 1: ACERVO E BUSCA (DESIGN LIMPO COM POP-UP)
         # ========================================================
-        with ui.tab_panel(tab_busca).classes('p-0 pt-2'):
-            with ui.column().classes('w-full gap-6'):
+        with ui.tab_panel(tab_busca).classes('p-0 pt-4'):
+            with ui.column().classes('w-full gap-6 max-w-5xl mx-auto'): # Centraliza e limita a largura para ficar elegante
                 
-                # BARRA DE PESQUISA UNIFICADA
-                with ui.card().classes('w-full p-2 bg-white rounded-2xl shadow-md border border-emerald-100'):
+                # 1. BARRA DE PESQUISA PRINCIPAL (SUPER MINIMALISTA)
+                with ui.card().classes('w-full p-2 bg-white rounded-full shadow-md border border-emerald-100'):
+                    with ui.row().classes('w-full items-center no-wrap pl-4'):
+                        
+                        ui.icon('search', size='1.5rem', color='emerald-600')
+                        busca_input = ui.input(placeholder='Pesquisar título, autor, palavras-chave...').classes('flex-grow px-2 text-lg').props('borderless')
+                        
+                        # Botão que abre a caixa flutuante (Pop-up)
+                        ui.button('Filtros', icon='tune', on_click=lambda: modal_filtros.open()).classes('text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-full px-4 py-2 shadow-none font-bold mr-2')
+                        
+                        # Botão principal de buscar
+                        ui.button('Buscar', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-full px-8 py-2 shadow-sm font-bold')
+
+                # 2. O POP-UP DE BUSCA AVANÇADA (Invisível até ser chamado)
+                modal_filtros = ui.dialog()
+                with modal_filtros, ui.card().classes('w-full max-w-3xl p-6 bg-white rounded-2xl shadow-xl'):
                     
-                    with ui.row().classes('w-full items-center no-wrap'):
-                        busca_input = ui.input(placeholder='Digite termos clínicos, DOI ou palavras-chave...').classes('flex-grow px-2').props('borderless')
-                        
-                        def toggle_filtros():
-                            area_filtros.visible = not area_filtros.visible
-                            btn_avancada.props(f'icon={"expand_less" if area_filtros.visible else "tune"}')
-
-                        btn_avancada = ui.button('Avançada', icon='tune', on_click=toggle_filtros).classes('bg-emerald-50 text-emerald-900 hover:bg-emerald-100 rounded-xl px-4 shadow-none border border-emerald-200 mr-2')
-                        ui.button(icon='search', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl px-6 shadow-sm')
-
-                    # Gaveta de Filtros 
-                    with ui.column().classes('w-full mt-2 p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 gap-4') as area_filtros:
-                        area_filtros.visible = False 
-                        
-                        ui.label('Filtros Específicos').classes('text-sm font-bold text-emerald-900 uppercase tracking-wider')
-                        
-                        with ui.row().classes('w-full gap-4'):
-                            filtro_titulo = ui.input(label='Título', placeholder='Palavras no título...').classes('flex-grow').props('outlined dense')
-                            palavras_chave = ui.input(label='Palavras-chave', placeholder='Ex: neonatologia...').classes('flex-grow').props('outlined dense')
-                            filtro_metodologia = ui.input(label='Metodologia', placeholder='Ex: revisão, estudo de caso...').classes('flex-grow').props('outlined dense')
+                    with ui.row().classes('w-full justify-between items-center mb-2'):
+                        with ui.row().classes('items-center gap-2'):
+                            ui.icon('tune', size='1.5rem', color='emerald-800')
+                            ui.label('Filtros Avançados').classes('text-xl font-bold text-emerald-900')
+                        ui.button(icon='close', on_click=modal_filtros.close).props('flat round').classes('text-slate-400 hover:text-slate-600')
+                    
+                    ui.label('Preencha apenas os campos que desejar para refinar a sua busca.').classes('text-sm text-slate-500 mb-6')
+                    
+                    with ui.column().classes('w-full gap-4'):
+                        # Linha 1
+                        with ui.row().classes('w-full gap-4 no-wrap'):
+                            filtro_titulo = ui.input(label='Título').classes('w-1/2').props('outlined dense')
+                            filtro_pesquisador = ui.input(label='Pesquisador/Autor').classes('w-1/2').props('outlined dense')
                             
-                        # LINHA DOS PROGRAMAS (COM LÓGICA DE CASCATA)
+                        # Linha 2
+                        with ui.row().classes('w-full gap-4 no-wrap'):
+                            palavras_chave = ui.input(label='Palavras-chave').classes('w-1/2').props('outlined dense')
+                            filtro_metodologia = ui.input(label='Metodologia').classes('w-1/4').props('outlined dense')
+                            filtro_ano = ui.input(label='Ano').classes('w-1/4').props('outlined dense')
+                            
+                        # Linha 3 (Programas e Cascata)
                         with ui.row().classes('w-full gap-4 mt-2 items-center'):
-                            filtro_pesquisador = ui.input(label='Pesquisador', placeholder='Nome do autor...').classes('flex-grow').props('outlined dense')
-                            
                             programa_principal = ui.select(
-                                label='Programa da Pós', 
+                                label='Programa da Pós / Residência', 
                                 options=[
                                     'Todos', 
                                     'Residência Médica em Ginecologia e Obstetrícia', 
@@ -91,24 +102,17 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 value='Todos'
                             ).classes('flex-grow').props('outlined dense')
                             
-                            # Caixinha de Ênfase (Invisível por padrão)
                             enfase_multi = ui.select(
                                 label='Selecione a Ênfase', 
                                 options=[
-                                    'Todas as Ênfases',
-                                    'Psicologia',
-                                    'Terapia Ocupacional',
-                                    'Serviço Social',
-                                    'Fonoaudiologia',
-                                    'Nutrição',
-                                    'Enfermagem',
-                                    'Farmácia'
+                                    'Todas as Ênfases', 'Psicologia', 'Terapia Ocupacional', 
+                                    'Serviço Social', 'Fonoaudiologia', 'Nutrição', 
+                                    'Enfermagem', 'Farmácia'
                                 ], 
                                 value='Todas as Ênfases'
-                            ).classes('w-1/4').props('outlined dense')
+                            ).classes('w-1/3').props('outlined dense')
                             enfase_multi.visible = False
                             
-                            # Lógica para mostrar/esconder a Ênfase
                             def atualizar_enfase(e):
                                 if e.value == 'Residência Multiprofissional em Neonatologia':
                                     enfase_multi.visible = True
@@ -118,182 +122,188 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                     
                             programa_principal.on_value_change(atualizar_enfase)
                             
-                            filtro_ano = ui.input(label='Ano', placeholder='Ex: 2026').classes('w-32').props('outlined dense')
-                        
-                        with ui.row().classes('w-full justify-end gap-3 mt-2'):
-                            def limpar_filtros():
-                                filtro_titulo.set_value('')
-                                palavras_chave.set_value('')
-                                filtro_metodologia.set_value('')
-                                filtro_pesquisador.set_value('')
-                                programa_principal.set_value('Todos')
-                                enfase_multi.set_value('Todas as Ênfases')
-                                filtro_ano.set_value('')
+                    # Botões do Pop-up
+                    with ui.row().classes('w-full justify-end gap-3 mt-6 pt-4 border-t border-slate-100'):
+                        def limpar_filtros():
+                            filtro_titulo.set_value('')
+                            palavras_chave.set_value('')
+                            filtro_metodologia.set_value('')
+                            filtro_pesquisador.set_value('')
+                            programa_principal.set_value('Todos')
+                            enfase_multi.set_value('Todas as Ênfases')
+                            filtro_ano.set_value('')
 
-                            ui.button('Limpar Filtros', on_click=limpar_filtros).classes('bg-white text-slate-600 hover:bg-slate-100 rounded-lg px-4 border border-slate-200 shadow-none')
-                            ui.button('Aplicar Busca Avançada', icon='search', on_click=lambda: executar_busca(True)).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg px-6 shadow-sm')
+                        ui.button('Limpar Tudo', on_click=limpar_filtros).classes('text-slate-600 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg px-4 shadow-none')
+                        ui.button('Aplicar Filtros', icon='check', on_click=lambda: [executar_busca(True), modal_filtros.close()]).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg px-6 shadow-sm')
 
-            # --- ÁREA DE RESULTADOS ---
-            area_resultados = ui.column().classes('w-full mt-4')
-            area_resultados.visible = False 
-            
-            with area_resultados:
-                ui.label('Resultados da Busca').classes('text-xl font-bold text-emerald-900 mb-2 px-2')
-                container_resultados = ui.column().classes('w-full gap-4')
+                # --- ÁREA DE RESULTADOS ---
+                area_resultados = ui.column().classes('w-full mt-6')
+                area_resultados.visible = False 
+                
+                with area_resultados:
+                    ui.label('Resultados Encontrados').classes('text-xl font-bold text-emerald-900 mb-2 px-2')
+                    container_resultados = ui.column().classes('w-full gap-4')
 
-            # --- FUNÇÃO DE BUSCA ---
-            def executar_busca(is_avancada):
-                area_resultados.visible = False
-                container_resultados.clear() 
-                
-                termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
-                
-                if not is_avancada and not termo_principal:
-                    ui.notify('Digite algo para pesquisar.', color='warning')
-                    return
+                # --- FUNÇÃO DE BUSCA ---
+                def executar_busca(is_avancada):
+                    area_resultados.visible = False
+                    container_resultados.clear() 
                     
-                ui.notify('Consultando o acervo...', color='info')
-                
-                try:
-                    # COLE AQUI O SEU LINK DO GOOGLE (Mantenha as aspas)
-                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv '
+                    termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
                     
-                    df = pd.read_csv(link_google_csv)
-                    df = df.fillna('') 
-                    
-                    colunas = df.columns.tolist()
-                    if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
-                        ui.notify('⚠️ ALERTA: O link lido não é um CSV ou a planilha está bloqueada/privada.', color='negative', timeout=8000)
+                    if not is_avancada and not termo_principal:
+                        ui.notify('Digite algo para pesquisar.', color='warning')
                         return
-                    
-                    planilha_real = []
-                    for linha in df.to_dict('records'):
-                        linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
-                        planilha_real.append(linha_limpa)
-                    
-                    resultados_encontrados = []
-                    
-                    for doc in planilha_real:
-                        d_titulo = str(doc.get('TITULO', '')).lower()
-                        d_autores = str(doc.get('AUTORES', '')).lower()
-                        d_chaves = str(doc.get('PALAVRAS-CHAVES', '')).lower()
-                        d_doi = str(doc.get('DOI', '')).lower()
-                        d_ano = str(doc.get('ANO', '')).lower()
-                        d_programa = str(doc.get('PROGRAMA DA POS', '')).lower()
-                        d_metodologia = str(doc.get('TIPO DE PESQUISA', '')).lower()
                         
-                        texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia}"
-                        passou_no_filtro = True
+                    ui.notify('Consultando o acervo...', color='info')
+                    
+                    try:
+                        # >>> COLE SEU LINK CSV DO GOOGLE AQUI <<<
+                        link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv '
                         
-                        if termo_principal and termo_principal not in texto_completo:
-                            passou_no_filtro = False
+                        df = pd.read_csv(link_google_csv)
+                        df = df.fillna('') 
+                        
+                        colunas = df.columns.tolist()
+                        if len(colunas) > 0 and '<!doctype html>' in str(colunas[0]).lower():
+                            ui.notify('⚠️ ALERTA: O link lido não é um CSV válido.', color='negative')
+                            return
+                        
+                        planilha_real = []
+                        for linha in df.to_dict('records'):
+                            linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
+                            planilha_real.append(linha_limpa)
+                        
+                        resultados_encontrados = []
+                        
+                        for doc in planilha_real:
+                            d_titulo = str(doc.get('TITULO', '')).lower()
+                            d_autores = str(doc.get('AUTORES', '')).lower()
+                            d_chaves = str(doc.get('PALAVRAS-CHAVES', '')).lower()
+                            d_doi = str(doc.get('DOI', '')).lower()
+                            d_ano = str(doc.get('ANO', '')).lower()
+                            d_programa = str(doc.get('PROGRAMA DA POS', '')).lower()
+                            d_metodologia = str(doc.get('TIPO DE PESQUISA', '')).lower()
                             
-                        if is_avancada and passou_no_filtro:
-                            if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
-                                passou_no_filtro = False
-                            if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves:
-                                passou_no_filtro = False
-                            if filtro_metodologia.value and str(filtro_metodologia.value).lower().strip() not in d_metodologia:
-                                passou_no_filtro = False
-                            if filtro_pesquisador.value and str(filtro_pesquisador.value).lower().strip() not in d_autores:
-                                passou_no_filtro = False
-                            if filtro_ano.value and str(filtro_ano.value).lower().strip() not in d_ano:
-                                passou_no_filtro = False
-                                
-                            # --- LÓGICA DE RECONSTRUÇÃO DO NOME DO PROGRAMA ---
-                            prog_selecionado = programa_principal.value
-                            enf_selecionada = enfase_multi.value
+                            texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia}"
+                            passou_no_filtro = True
                             
-                            if prog_selecionado != 'Todos':
-                                texto_busca_programa = prog_selecionado.lower()
+                            if termo_principal and termo_principal not in texto_completo:
+                                passou_no_filtro = False
                                 
-                                # Se a pessoa escolheu a multiprofissional E uma ênfase específica, recriamos o texto igual à planilha
-                                if prog_selecionado == 'Residência Multiprofissional em Neonatologia' and enf_selecionada != 'Todas as Ênfases':
-                                    texto_busca_programa = f"residência multiprofissional em neonatologia (ênfase em {enf_selecionada.lower()})"
-                                
-                                if texto_busca_programa not in d_programa:
+                            if is_avancada and passou_no_filtro:
+                                if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo:
                                     passou_no_filtro = False
-                                
-                        if passou_no_filtro:
-                            resultados_encontrados.append(doc)
-                    
-                    area_resultados.visible = True
-                    
-                    with container_resultados:
-                        if len(resultados_encontrados) > 0:
-                            ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
-                            
-                            for doc in resultados_encontrados:
-                                with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
+                                if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves:
+                                    passou_no_filtro = False
+                                if filtro_metodologia.value and str(filtro_metodologia.value).lower().strip() not in d_metodologia:
+                                    passou_no_filtro = False
+                                if filtro_pesquisador.value and str(filtro_pesquisador.value).lower().strip() not in d_autores:
+                                    passou_no_filtro = False
+                                if filtro_ano.value and str(filtro_ano.value).lower().strip() not in d_ano:
+                                    passou_no_filtro = False
                                     
-                                    with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:
+                                prog_selecionado = programa_principal.value
+                                enf_selecionada = enfase_multi.value
+                                
+                                if prog_selecionado != 'Todos':
+                                    texto_busca_programa = prog_selecionado.lower()
+                                    if prog_selecionado == 'Residência Multiprofissional em Neonatologia' and enf_selecionada != 'Todas as Ênfases':
+                                        texto_busca_programa = f"residência multiprofissional em neonatologia (ênfase em {enf_selecionada.lower()})"
+                                    
+                                    if texto_busca_programa not in d_programa:
+                                        passou_no_filtro = False
+                                    
+                            if passou_no_filtro:
+                                resultados_encontrados.append(doc)
+                        
+                        area_resultados.visible = True
+                        
+                        with container_resultados:
+                            if len(resultados_encontrados) > 0:
+                                ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
+                                
+                                for doc in resultados_encontrados:
+                                    with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
                                         
-                                        with ui.column().classes('flex-grow gap-1'):
-                                            with ui.row().classes('gap-2 items-center'):
-                                                ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
-                                                ui.label(str(doc.get('ANO', ''))).classes('text-sm text-slate-500 font-medium')
+                                        with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:
                                             
-                                            ui.label(str(doc.get('TITULO', 'Sem Título'))).classes('text-lg font-bold text-emerald-900 leading-tight mt-1')
-                                            ui.label(str(doc.get('AUTORES', ''))).classes('text-sm text-slate-600')
-                                        
-                                        with ui.row().classes('shrink-0 items-center gap-4'):
-                                            btn_pdf = ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-4 py-2 transition-colors')
-                                            btn_pdf.on('click.stop', lambda: ui.notify('Link do PDF será conectado aqui!'))
-                                            icone_seta = ui.icon('keyboard_arrow_down', size='2rem', color='slate-400').classes('transition-transform duration-300')
+                                            with ui.column().classes('flex-grow gap-1'):
+                                                with ui.row().classes('gap-2 items-center'):
+                                                    ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
+                                                    ui.label(str(doc.get('ANO', ''))).classes('text-sm text-slate-500 font-medium')
+                                                
+                                                ui.label(str(doc.get('TITULO', 'Sem Título'))).classes('text-lg font-bold text-emerald-900 leading-tight mt-1')
+                                                ui.label(str(doc.get('AUTORES', ''))).classes('text-sm text-slate-600')
+                                            
+                                            with ui.row().classes('shrink-0 items-center gap-4'):
+                                                btn_pdf = ui.button('Baixar PDF', icon='picture_as_pdf').classes('bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border border-emerald-200 shadow-none rounded-lg px-4 py-2 transition-colors')
+                                                
+                                                # >>> LÓGICA ATUALIZADA DO PDF (MUITO IMPORTANTE) <<<
+                                                link_do_arquivo = str(doc.get('LINK PDF', '')).strip()
+                                                if link_do_arquivo:
+                                                    btn_pdf.on('click.stop', lambda url=link_do_arquivo: ui.navigate.to(url, new_tab=True))
+                                                else:
+                                                    btn_pdf.props('disable')
+                                                    btn_pdf.classes(remove='bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border-emerald-200')
+                                                    btn_pdf.classes(add='bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed')
+                                                    btn_pdf.text = 'Sem PDF'
+                                                    
+                                                icone_seta = ui.icon('keyboard_arrow_down', size='2rem', color='slate-400').classes('transition-transform duration-300')
 
-                                    with ui.column().classes('w-full px-6 pb-6 pt-2 bg-slate-50/50 border-t border-slate-100 gap-4') as detalhes:
-                                        detalhes.visible = False 
-                                        
-                                        with ui.row().classes('w-full items-start gap-8'):
-                                            orientador = str(doc.get('ORIENTADOR', '')).strip()
-                                            if orientador:
-                                                with ui.row().classes('items-start gap-2'):
-                                                    ui.icon('person', size='1.2rem', color='emerald-700')
-                                                    with ui.column().classes('gap-0'):
-                                                        ui.label('Orientador').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
-                                                        ui.label(orientador).classes('text-sm text-slate-800')
-                                                        
-                                            chaves = str(doc.get('PALAVRAS-CHAVES', '')).strip()
-                                            if chaves:
-                                                with ui.row().classes('items-start gap-2'):
-                                                    ui.icon('vpn_key', size='1.2rem', color='emerald-700')
-                                                    with ui.column().classes('gap-0'):
-                                                        ui.label('Palavras-chave').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
-                                                        ui.label(chaves).classes('text-sm text-slate-800')
+                                        with ui.column().classes('w-full px-6 pb-6 pt-2 bg-slate-50/50 border-t border-slate-100 gap-4') as detalhes:
+                                            detalhes.visible = False 
+                                            
+                                            with ui.row().classes('w-full items-start gap-8'):
+                                                orientador = str(doc.get('ORIENTADOR', '')).strip()
+                                                if orientador:
+                                                    with ui.row().classes('items-start gap-2'):
+                                                        ui.icon('person', size='1.2rem', color='emerald-700')
+                                                        with ui.column().classes('gap-0'):
+                                                            ui.label('Orientador').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(orientador).classes('text-sm text-slate-800')
+                                                            
+                                                chaves = str(doc.get('PALAVRAS-CHAVES', '')).strip()
+                                                if chaves:
+                                                    with ui.row().classes('items-start gap-2'):
+                                                        ui.icon('vpn_key', size='1.2rem', color='emerald-700')
+                                                        with ui.column().classes('gap-0'):
+                                                            ui.label('Palavras-chave').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(chaves).classes('text-sm text-slate-800')
 
-                                            metodologia = str(doc.get('TIPO DE PESQUISA', '')).strip()
-                                            if metodologia:
-                                                with ui.row().classes('items-start gap-2'):
-                                                    ui.icon('search', size='1.2rem', color='emerald-700')
-                                                    with ui.column().classes('gap-0'):
-                                                        ui.label('Metodologia').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
-                                                        ui.label(metodologia).classes('text-sm text-slate-800')
-                                                        
-                                            programa = str(doc.get('PROGRAMA DA POS', '')).strip()
-                                            if programa and programa.lower() != 'nenhum':
-                                                with ui.row().classes('items-start gap-2'):
-                                                    ui.icon('school', size='1.2rem', color='emerald-700')
-                                                    with ui.column().classes('gap-0'):
-                                                        ui.label('Programa').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
-                                                        ui.label(programa).classes('text-sm text-slate-800')
+                                                metodologia = str(doc.get('TIPO DE PESQUISA', '')).strip()
+                                                if metodologia:
+                                                    with ui.row().classes('items-start gap-2'):
+                                                        ui.icon('search', size='1.2rem', color='emerald-700')
+                                                        with ui.column().classes('gap-0'):
+                                                            ui.label('Metodologia').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(metodologia).classes('text-sm text-slate-800')
+                                                            
+                                                programa = str(doc.get('PROGRAMA DA POS', '')).strip()
+                                                if programa and programa.lower() != 'nenhum':
+                                                    with ui.row().classes('items-start gap-2'):
+                                                        ui.icon('school', size='1.2rem', color='emerald-700')
+                                                        with ui.column().classes('gap-0'):
+                                                            ui.label('Programa').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(programa).classes('text-sm text-slate-800')
 
-                                    def criar_acao_toggle(det, icone):
-                                        def acao():
-                                            det.visible = not det.visible
-                                            if det.visible:
-                                                icone.classes(add='rotate-180')
-                                            else:
-                                                icone.classes(remove='rotate-180')
-                                        return acao
-                                        
-                                    cabecalho.on('click', criar_acao_toggle(detalhes, icone_seta))
-                        else:
-                            with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
-                                ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
-                                ui.label('Nenhum documento encontrado.').classes('text-red-500 text-center font-bold')
-                
-                except Exception as e:
-                    ui.notify(f'Erro técnico: {str(e)}', color='negative')
+                                        def criar_acao_toggle(det, icone):
+                                            def acao():
+                                                det.visible = not det.visible
+                                                if det.visible:
+                                                    icone.classes(add='rotate-180')
+                                                else:
+                                                    icone.classes(remove='rotate-180')
+                                            return acao
+                                            
+                                        cabecalho.on('click', criar_acao_toggle(detalhes, icone_seta))
+                            else:
+                                with ui.column().classes('w-full items-center justify-center p-12 bg-slate-50 border border-red-100 rounded-2xl border-dashed'):
+                                    ui.icon('search_off', size='3rem', color='red-300').classes('mb-2')
+                                    ui.label('Nenhum documento encontrado.').classes('text-red-500 text-center font-bold')
+                    
+                    except Exception as e:
+                        ui.notify(f'Erro técnico: {str(e)}', color='negative')
                     
        
 
