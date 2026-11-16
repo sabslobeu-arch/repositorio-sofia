@@ -189,6 +189,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             d_ano = str(doc.get('ANO', '')).lower()
                             d_programa = str(doc.get('PROGRAMA DA POS', '')).lower()
                             d_metodologia = str(doc.get('TIPO DE PESQUISA', '')).lower()
+                            d_revista = str(doc.get('REVISTA', '')).lower()
                         
                             texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia}"
                             passou_no_filtro = True
@@ -259,6 +260,15 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                         with ui.column().classes('w-full px-6 pb-6 pt-2 bg-slate-50/50 border-t border-slate-100 gap-4') as detalhes:
                                             detalhes.visible = False 
                                             with ui.row().classes('w-full items-start gap-8 flex-wrap'):
+
+                                                revista = str(doc.get('REVISTA', '')).strip()
+                                                if revista:
+                                                    with ui.row().classes('items-start gap-2'):
+                                                        ui.icon('menu_book', size='1.2rem', color='emerald-700')
+                                                        with ui.column().classes('gap-0'):
+                                                            ui.label('Revista / Periódico').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(revista).classes('text-sm text-slate-800')            
+                                                
                                                 orientador = str(doc.get('ORIENTADOR', '')).strip()
                                                 if orientador:
                                                     with ui.row().classes('items-start gap-2'):
