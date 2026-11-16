@@ -108,7 +108,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 options=[
                                     'Todas as Ênfases', 'Psicologia', 'Terapia Ocupacional', 
                                     'Serviço Social', 'Fonoaudiologia', 'Nutrição', 
-                                    'Enfermagem', 'Farmácia'
+                                    'Enfermagem', 'Farmácia', 'Fisioterapia'
                                 ], 
                                 value='Todas as Ênfases'
                             ).classes('w-1/3').props('outlined dense')
