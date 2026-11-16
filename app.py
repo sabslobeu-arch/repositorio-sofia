@@ -47,10 +47,10 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         # ABA 1: ACERVO E BUSCA (LIGADO AO GOOGLE PLANILHAS)
         # ========================================================
         # ========================================================
-    # ABA 1: ACERVO E BUSCA
-    # ========================================================
-    with ui.tab_panel(tab_busca).classes('p-0 pt-8'):
-        with ui.column().classes('w-full gap-6 max-w-5xl mx-auto'):
+        # ABA 1: ACERVO E BUSCA
+        # ========================================================
+        with ui.tab_panel(tab_busca).classes('p-0 pt-8'):
+            with ui.column().classes('w-full gap-6 max-w-5xl mx-auto'):
             
             # 1. BARRA DE PESQUISA PRINCIPAL
             with ui.card().classes('w-full p-2 bg-white rounded-full shadow-md border border-emerald-100'):
@@ -164,7 +164,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
 
                 try:
                     # >>> NÃO ESQUEÇA DE COLAR O SEU LINK AQUI DE NOVO <<<
-                    link_google_csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQG779ehUZitbl1NCLdWpt-nR0QKC9qs80cH13ZYFzIPBevuGt8GDXnb4MafKsGvNKFVwle_AeslQK/pub?output=csv '
+                    link_google_csv = 'SEU_LINK_AQUI'
                     
                     df = pd.read_csv(link_google_csv)
                     df = df.fillna('') 
