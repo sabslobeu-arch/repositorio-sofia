@@ -138,6 +138,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         ui.button('Aplicar Filtros', icon='check', on_click=lambda: [executar_busca(True), modal_filtros.close()]).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg px-6 shadow-sm')
 
                 # --- ÁREA DE RESULTADOS ---
+                area_filtros_ativos = ui.row().classes('w-full items-center gap-2 mt-4 px-4')
+                
                 area_resultados = ui.column().classes('w-full mt-6')
                 area_resultados.visible = False 
                 
@@ -149,6 +151,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 def executar_busca(is_avancada):
                     area_resultados.visible = False
                     container_resultados.clear() 
+                    area_filtros_ativos.clear()
                     
                     termo_principal = busca_input.value.lower().strip() if busca_input.value else ""
                     
@@ -157,6 +160,29 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         return
                         
                     ui.notify('Consultando o acervo...', color='info')
+
+                # =========================================================
+                # NOVO: LÓGICA PARA DESENHAR AS ETIQUETAS NA TELA
+                # =========================================================
+                filtros_aplicados = []
+                
+                if is_avancada:
+                    if filtro_titulo.value: filtros_aplicados.append(f"Título: {filtro_titulo.value}")
+                    if palavras_chave.value: filtros_aplicados.append(f"Palavra-chave: {palavras_chave.value}")
+                    if filtro_metodologia.value: filtros_aplicados.append(f"Metodologia: {filtro_metodologia.value}")
+                    if filtro_pesquisador.value: filtros_aplicados.append(f"Autor: {filtro_pesquisador.value}")
+                    if filtro_ano.value: filtros_aplicados.append(f"Ano: {filtro_ano.value}")
+                    if programa_principal.value and programa_principal.value != 'Todos':
+                        filtros_aplicados.append(f"Programa: {programa_principal.value}")
+                    if enfase_multi.value and enfase_multi.value != 'Todas as Ênfases' and enfase_multi.visible:
+                        filtros_aplicados.append(f"Ênfase: {enfase_multi.value}")
+                        
+                # Se tiver algum filtro, desenha as etiquetas verdes na tela
+                if filtros_aplicados:
+                    with area_filtros_ativos:
+                        ui.label('Filtros ativos:').classes('text-sm font-bold text-slate-500 mr-2')
+                        for tag in filtros_aplicados:
+                            ui.label(tag).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200')
                     
                     try:
                         # >>> COLE SEU LINK CSV DO GOOGLE AQUI <<<
