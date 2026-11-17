@@ -179,12 +179,19 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             # Limpa os nomes das colunas (tira espaços e põe maiúscula)
                             linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
                             
+                            # --- LIMPANDO O ANO DECIMAL (Tira o .0) ---
+                            ano = str(linha_limpa.get('ANO', ''))
+                            if ano.endswith('.0'):
+                                linha_limpa['ANO'] = ano.replace('.0', '')
+                            
                             # --- O NOSSO ESCUDO ANTI-FANTASMA ---
                             titulo = str(linha_limpa.get('TITULO', '')).strip().lower()
                             
                             # Só adiciona na planilha real se o título não estiver vazio e não for 'nan'
                             if titulo != '' and titulo != 'nan':
                                 planilha_real.append(linha_limpa)
+                    
+                        resultados_encontrados = []
                     
                         resultados_encontrados = []
                     
