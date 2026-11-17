@@ -174,7 +174,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             ui.notify('⚠️ ALERTA: O link lido não é um CSV válido.', color='negative')
                             return
                     
-                       planilha_real = []
+                        planilha_real = []
                         for linha in df.to_dict('records'):
                             # Limpa os nomes das colunas (tira espaços e põe maiúscula)
                             linha_limpa = {str(chave).strip().upper(): valor for chave, valor in linha.items()}
