@@ -278,7 +278,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                 
                                                     # Se for artigo, muda o nome e o ícone
                                                     if 'ARTIGO' in tipo_doc:
-                                                        rotulo = 'Pesquisador(a) Vinculado(a)'
+                                                        rotulo = 'Pesquisador(a)'
                                                         icone_pesq = 'biotech' # Ícone de ciência/laboratório
                                                     else:
                                                         rotulo = 'Orientador(a)'
