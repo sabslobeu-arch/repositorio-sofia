@@ -193,8 +193,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                         resultados_encontrados = []
                     
-                        resultados_encontrados = []
-                    
+                        
                         for doc in planilha_real:
                             d_titulo = str(doc.get('TITULO', '')).lower()
                             d_autores = str(doc.get('AUTORES', '')).lower()
@@ -212,6 +211,10 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             # A "sopa de letrinhas" que o sistema usa para buscar
                             texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia} {d_revista} {d_pesq_vinc}"
                             passou_no_filtro = True
+                            
+                            # --- O DETETIVE DA BUSCA CORRIGIDO ---
+                            if termo_principal != "" and termo_principal not in texto_completo:
+                                passou_no_filtro = False
                             
                             if is_avancada and passou_no_filtro:
                                 if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo: passou_no_filtro = False
