@@ -191,11 +191,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             d_metodologia = str(doc.get('TIPO DE PESQUISA', '')).lower()
                             d_revista = str(doc.get('REVISTA', '')).lower()
                         
-                            texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia}"
-                            passou_no_filtro = True
+                            # --- AS NOVAS COLUNAS SENDO LIDAS AQUI ---
+                            d_revista = str(doc.get('REVISTA', '')).lower()
+                            d_pesq_vinc = str(doc.get('ORIENTADOR/PESQUISADOR', '')).lower()
                         
-                            if termo_principal and termo_principal not in texto_completo:
-                                passou_no_filtro = False
+                            # A "sopa de letrinhas" que o sistema usa para buscar
+                            texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia} {d_revista} {d_pesq_vinc}"
+                            passou_no_filtro = True
                             
                             if is_avancada and passou_no_filtro:
                                 if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo: passou_no_filtro = False
@@ -269,13 +271,24 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                             ui.label('Revista / Periódico').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
                                                             ui.label(revista).classes('text-sm text-slate-800')            
                                                 
-                                                orientador = str(doc.get('ORIENTADOR', '')).strip()
-                                                if orientador:
+                                                pesq_vinc = str(doc.get('ORIENTADOR/PESQUISADOR', '')).strip()
+                                                if pesq_vinc:
+                                                    # Descobre o tipo do documento
+                                                    tipo_doc = str(doc.get('TIPO DE DOCUMENTO', '')).upper()
+                                                
+                                                    # Se for artigo, muda o nome e o ícone
+                                                    if 'ARTIGO' in tipo_doc:
+                                                        rotulo = 'Pesquisador(a) Vinculado(a)'
+                                                        icone_pesq = 'biotech' # Ícone de ciência/laboratório
+                                                    else:
+                                                        rotulo = 'Orientador(a)'
+                                                        icone_pesq = 'person'  # Ícone de pessoa
+                                                    
                                                     with ui.row().classes('items-start gap-2'):
-                                                        ui.icon('person', size='1.2rem', color='emerald-700')
+                                                        ui.icon(icone_pesq, size='1.2rem', color='emerald-700')
                                                         with ui.column().classes('gap-0'):
-                                                            ui.label('Orientador').classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
-                                                            ui.label(orientador).classes('text-sm text-slate-800')
+                                                            ui.label(rotulo).classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
+                                                            ui.label(pesq_vinc).classes('text-sm text-slate-800')
                                                         
                                                 chaves = str(doc.get('PALAVRAS-CHAVES', '')).strip()
                                                 if chaves:
