@@ -79,7 +79,11 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         
                         with ui.row().classes('w-full gap-4 no-wrap'):
                             palavras_chave = ui.input(label='Palavras-chave').classes('w-1/2').props('outlined dense')
-                            filtro_metodologia = ui.input(label='Metodologia').classes('w-1/4').props('outlined dense')
+                            
+                            # --- NOVO: Substituímos o input de Metodologia pelo select de Tipo ---
+                            opcoes_tipo = ['Todos', 'Artigo', 'TCR', 'Tese', 'Dissertação', 'Capítulo de Livro']
+                            filtro_tipo = ui.select(label='Tipo de Documento', options=opcoes_tipo, value='Todos').classes('w-1/4').props('outlined dense')
+                            
                             filtro_ano = ui.input(label='Ano').classes('w-1/4').props('outlined dense')
                         
                         with ui.row().classes('w-full gap-4 mt-2 items-center'):
@@ -109,7 +113,10 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         def limpar_filtros():
                             filtro_titulo.set_value('')
                             palavras_chave.set_value('')
-                            filtro_metodologia.set_value('')
+                            
+                            # --- ATUALIZADO: O botão "Limpar Tudo" agora reseta o filtro de Tipo ---
+                            filtro_tipo.set_value('Todos')
+                            
                             filtro_pesquisador.set_value('')
                             programa_principal.set_value('Todos')
                             enfase_multi.set_value('Todas as Ênfases')
@@ -148,9 +155,14 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     if is_avancada:
                         if filtro_titulo.value: filtros_aplicados.append(f"Título: {filtro_titulo.value}")
                         if palavras_chave.value: filtros_aplicados.append(f"Palavras-chave: {palavras_chave.value}")
-                        if filtro_metodologia.value: filtros_aplicados.append(f"Metodologia: {filtro_metodologia.value}")
+                        
+                        # --- ATUALIZADO: Agora mostra a etiqueta do Tipo de Documento ---
+                        if filtro_tipo.value and filtro_tipo.value != 'Todos': 
+                            filtros_aplicados.append(f"Tipo: {filtro_tipo.value}")
+                            
                         if filtro_pesquisador.value: filtros_aplicados.append(f"Autor: {filtro_pesquisador.value}")
                         if filtro_ano.value: filtros_aplicados.append(f"Ano: {filtro_ano.value}")
+                        
                         if programa_principal.value and programa_principal.value != 'Todos':
                             filtros_aplicados.append(f"Programa: {programa_principal.value}")
                         if enfase_multi.value and enfase_multi.value != 'Todas as Ênfases' and enfase_multi.visible:
@@ -219,8 +231,19 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             if is_avancada and passou_no_filtro:
                                 if filtro_titulo.value and str(filtro_titulo.value).lower().strip() not in d_titulo: passou_no_filtro = False
                                 if palavras_chave.value and str(palavras_chave.value).lower().strip() not in d_chaves: passou_no_filtro = False
-                                if filtro_metodologia.value and str(filtro_metodologia.value).lower().strip() not in d_metodologia: passou_no_filtro = False
-                                if filtro_pesquisador.value and str(filtro_pesquisador.value).lower().strip() not in d_autores: passou_no_filtro = False
+                                
+                                # --- O NOVO FILTRO DE TIPO AQUI ---
+                                if filtro_tipo.value and filtro_tipo.value != 'Todos':
+                                    tipo_planilha = str(doc.get('TIPO DE DOCUMENTO', '')).lower()
+                                    if str(filtro_tipo.value).lower().strip() not in tipo_planilha:
+                                        passou_no_filtro = False
+                                        
+                                # --- ATUALIZADO: Agora procura tanto nos Autores quanto no Orientador/Pesquisador ---
+                                if filtro_pesquisador.value:
+                                    termo_pesq = str(filtro_pesquisador.value).lower().strip()
+                                    if termo_pesq not in d_autores and termo_pesq not in d_pesq_vinc:
+                                        passou_no_filtro = False
+                                        
                                 if filtro_ano.value and str(filtro_ano.value).lower().strip() not in d_ano: passou_no_filtro = False
                                 
                                 prog_selecionado = programa_principal.value
