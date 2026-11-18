@@ -70,7 +70,10 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
         
                         with ui.column().classes('w-full gap-4 text-slate-600 text-sm text-justify'):
                             ui.label('O Repositório Institucional do Hospital Sofia Feldman possui finalidade exclusivamente acadêmica, científica e histórica, visando a preservação e o acesso à produção intelectual da instituição.')
-            
+
+                            ui.label('Responsabilidade Intelectual e Autoral:').classes('font-bold text-slate-800 mt-2')
+                            ui.label('O conteúdo, a veracidade dos dados e a originalidade dos documentos disponibilizados neste repositório são de inteira e exclusiva responsabilidade de seus respectivos autores. O Hospital Sofia Feldman atua apenas como depositário e divulgador da produção científica, não se responsabilizando por eventuais infrações de direitos autorais, plágio, uso indevido de imagens ou dados de terceiros. Presume-se, ainda, que as pesquisas possuam as devidas aprovações do Comitê de Ética em Pesquisa (CEP), quando aplicável.')
+                            
                             ui.label('Base Legal (LGPD):').classes('font-bold text-slate-800 mt-2')
                             ui.label('O tratamento de dados pessoais (como nomes de autores, orientadores e pesquisadores) presentes neste repositório é realizado com base no Art. 4º, inciso II, alínea "b" e Art. 7º, inciso IV da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), que resguarda o tratamento de dados para fins exclusivos acadêmicos e a realização de estudos por órgão de pesquisa.')
             
