@@ -521,4 +521,4 @@ ui.run(port=port, host='0.0.0.0', title='Repositório Sofia', reload=False)
 with ui.row().classes('w-full justify-center items-center gap-4 py-8 mt-12 border-t border-slate-200 text-slate-400 text-xs'):
     ui.label('© 2026 Hospital Sofia Feldman - Repositório Institucional')
     ui.label('|')
-    ui.button('Termos de Uso e LGPD', on_click=modal_lgpd.open).props('flat dense').classes('text-emerald-700 hover:text-emerald-900 underline lowercase font-bold')
+    ui.button('TERMOS DE USO E LGPD', on_click=modal_lgpd.open).props('flat dense').classes('text-emerald-700 hover:text-emerald-900 underline lowercase font-bold')
