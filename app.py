@@ -61,6 +61,25 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         ui.button('Filtros', icon='tune', on_click=lambda: modal_filtros.open()).classes('text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-full px-4 py-2 shadow-none font-bold mr-2')
                         ui.button('Buscar', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-full px-8 py-2 shadow-sm font-bold')
 
+                # --- JANELA DA LGPD ---
+                with ui.dialog() as modal_lgpd:
+                    with ui.card().classes('w-full max-w-3xl p-8 bg-white rounded-xl'):
+                        with ui.row().classes('w-full items-center justify-between mb-6'):
+                            ui.label('Política de Privacidade e LGPD').classes('text-2xl font-bold text-slate-800')
+                            ui.icon('gavel', size='2rem', color='emerald-700')
+        
+                        with ui.column().classes('w-full gap-4 text-slate-600 text-sm text-justify'):
+                            ui.label('O Repositório Institucional do Hospital Sofia Feldman possui finalidade exclusivamente acadêmica, científica e histórica, visando a preservação e o acesso à produção intelectual da instituição.')
+            
+                            ui.label('Base Legal (LGPD):').classes('font-bold text-slate-800 mt-2')
+                            ui.label('O tratamento de dados pessoais (como nomes de autores, orientadores e pesquisadores) presentes neste repositório é realizado com base no Art. 4º, inciso II, alínea "b" e Art. 7º, inciso IV da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), que resguarda o tratamento de dados para fins exclusivos acadêmicos e a realização de estudos por órgão de pesquisa.')
+            
+                            ui.label('Direitos do Titular:').classes('font-bold text-slate-800 mt-2')
+                            ui.label('Em compromisso com a transparência, caso você identifique seus dados pessoais vinculados a uma publicação e deseje solicitar correção de grafia, anonimização parcial ou remoção por motivos de privacidade, entre em contato com o a Biblioteca do hospital.')
+            
+                        with ui.row().classes('w-full justify-end mt-8 pt-4 border-t border-slate-100'):
+                            ui.button('Entendi e Fechar', on_click=modal_lgpd.close).classes('bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg px-6 shadow-sm')
+                
                 # 2. POP-UP DE BUSCA AVANÇADA
                 modal_filtros = ui.dialog()
                 with modal_filtros, ui.card().classes('w-full max-w-3xl p-6 bg-white rounded-2xl shadow-xl'):
@@ -497,3 +516,9 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
 # Inicialização do Servidor para o Render
 port = int(os.environ.get('PORT', 8080))
 ui.run(port=port, host='0.0.0.0', title='Repositório Sofia', reload=False)
+
+# --- RODAPÉ COM O LINK DA LGPD ---
+with ui.row().classes('w-full justify-center items-center gap-4 py-8 mt-12 border-t border-slate-200 text-slate-400 text-xs'):
+    ui.label('© 2026 Hospital Sofia Feldman - Repositório Institucional')
+    ui.label('|')
+    ui.button('Termos de Uso e LGPD', on_click=modal_lgpd.open).props('flat dense').classes('text-emerald-700 hover:text-emerald-900 underline lowercase font-bold')
