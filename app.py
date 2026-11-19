@@ -247,8 +247,12 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             # A "sopa de letrinhas" atualizada
                             texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia} {d_revista} {d_pesq_vinc} {d_instituicao}"
                             
+                            # 1. A VARIÁVEL NASCE AQUI COMO VERDADEIRA (Tem que ter essa linha!)
+                            passou_no_filtro = True
+                            
                             # --- O DETETIVE DA BUSCA CORRIGIDO ---
                             if termo_principal != "" and termo_principal not in texto_completo:
+                                # 2. O FALSE TEM QUE TER O 'F' MAIÚSCULO
                                 passou_no_filtro = False
                             
                             if is_avancada and passou_no_filtro:
