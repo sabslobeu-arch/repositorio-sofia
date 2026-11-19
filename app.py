@@ -159,20 +159,20 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     ui.label('Resultados Encontrados').classes('text-xl font-bold text-emerald-900 mb-2 px-2')
                     container_resultados = ui.column().classes('w-full gap-4')
 
-                def exportar_resultados():
-                    # Verifica se tem alguma coisa na tela para exportar
-                    if len(resultados_encontrados) == 0:
-                        ui.notify('Nenhum documento na tela para exportar.', type='warning')
-                        return
+                    def exportar_resultados():
+                        import pandas as pd
+                        if len(resultados_encontrados) == 0:
+                            ui.notify('Nenhum documento na tela para exportar.', type='warning')
+                            return
     
-                    # 1. Pega os cartões da tela e transforma numa tabela
-                    df_export = pd.DataFrame(resultados_encontrados)
+                        # 1. Pega os cartões da tela e transforma numa tabela
+                        df_export = pd.DataFrame(resultados_encontrados)
     
-                    # 2. Transforma em CSV no padrão do Excel Brasileiro (separador ; e acentos corrigidos)
-                    csv_texto = df_export.to_csv(index=False, sep=';', encoding='utf-8-sig')
+                        # 2. Transforma em CSV no padrão do Excel Brasileiro
+                        csv_texto = df_export.to_csv(index=False, sep=';', encoding='utf-8-sig')
     
-                    # 3. O NiceGUI força o download no navegador do usuário
-                    ui.download(csv_texto.encode('utf-8-sig'), 'Resultados_Repositorio_SofiaFeldman.csv')
+                        # 3. Força o download no navegador
+                        ui.download(csv_texto.encode('utf-8-sig'), 'Resultados_Repositorio_SofiaFeldman.csv')
 
                 # 4. FUNÇÃO DE BUSCA 
                 def executar_busca(is_avancada):
