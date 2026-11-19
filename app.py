@@ -57,7 +57,8 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     with ui.row().classes('w-full items-center no-wrap pl-4'):
                         ui.icon('search', size='1.5rem', color='emerald-600')
                         busca_input = ui.input(placeholder='Pesquisar título, autor, palavras-chave...').classes('flex-grow px-2 text-lg').props('borderless')
-                    
+
+                        ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold shadow-none rounded-lg px-4 ml-2')
                         ui.button('Filtros', icon='tune', on_click=lambda: modal_filtros.open()).classes('text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-full px-4 py-2 shadow-none font-bold mr-2')
                         ui.button('Buscar', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-full px-8 py-2 shadow-sm font-bold')
 
@@ -157,6 +158,21 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                 with area_resultados:
                     ui.label('Resultados Encontrados').classes('text-xl font-bold text-emerald-900 mb-2 px-2')
                     container_resultados = ui.column().classes('w-full gap-4')
+
+                def exportar_resultados():
+                    # Verifica se tem alguma coisa na tela para exportar
+                    if len(resultados_encontrados) == 0:
+                        ui.notify('Nenhum documento na tela para exportar.', type='warning')
+                        return
+    
+                    # 1. Pega os cartões da tela e transforma numa tabela
+                    df_export = pd.DataFrame(resultados_encontrados)
+    
+                    # 2. Transforma em CSV no padrão do Excel Brasileiro (separador ; e acentos corrigidos)
+                    csv_texto = df_export.to_csv(index=False, sep=';', encoding='utf-8-sig')
+    
+                    # 3. O NiceGUI força o download no navegador do usuário
+                    ui.download(csv_texto.encode('utf-8-sig'), 'Resultados_Repositorio_SofiaFeldman.csv')
 
                 # 4. FUNÇÃO DE BUSCA 
                 def executar_busca(is_avancada):
