@@ -241,10 +241,11 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             # --- AS NOVAS COLUNAS SENDO LIDAS AQUI ---
                             d_revista = str(doc.get('REVISTA', '')).lower()
                             d_pesq_vinc = str(doc.get('ORIENTADOR/PESQUISADOR', '')).lower()
+                            d_instituicao = str(doc.get('INSTITUIÇÃO', '')).lower()
                         
-                            # A "sopa de letrinhas" que o sistema usa para buscar
-                            texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia} {d_revista} {d_pesq_vinc}"
-                            passou_no_filtro = True
+                            
+                            # A "sopa de letrinhas" atualizada
+                            texto_completo = f"{d_titulo} {d_autores} {d_chaves} {d_doi} {d_metodologia} {d_revista} {d_pesq_vinc} {d_instituicao}"
                             
                             # --- O DETETIVE DA BUSCA CORRIGIDO ---
                             if termo_principal != "" and termo_principal not in texto_completo:
@@ -351,6 +352,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                                         with ui.column().classes('gap-0'):
                                                             ui.label(rotulo).classes('text-[10px] font-bold text-slate-500 uppercase tracking-wider')
                                                             ui.label(pesq_vinc).classes('text-sm text-slate-800')
+
+                                                    # --- EXIBIÇÃO DA INSTITUIÇÃO ---
+                                                instituicao = str(doc.get('INSTITUIÇÃO', '')).strip()
+                                                if instituicao and instituicao.lower() != 'nan':
+                                                    with ui.row().classes('w-full items-center gap-2 no-wrap'):
+                                                        ui.icon('account_balance', size='1.1rem', color='slate-500')
+                                                        ui.label(f'Instituição: {instituicao}').classes('text-sm text-slate-700')
                                                         
                                                 chaves = str(doc.get('PALAVRAS-CHAVES', '')).strip()
                                                 if chaves:
