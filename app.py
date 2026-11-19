@@ -6,6 +6,15 @@ from nicegui import ui
 import urllib.request 
 import json
 
+def exportar_resultados():
+    if len(resultados_encontrados) == 0:
+        ui.notify('Nenhum documento na tela para exportar.', type='warning')
+        return
+    
+    df_export = pd.DataFrame(resultados_encontrados)
+    csv_texto = df_export.to_csv(index=False, sep=';', encoding='utf-8-sig')
+    ui.download(csv_texto.encode('utf-8-sig'), 'Resultados_Repositorio_SofiaFeldman.csv'
+
 # 1. SUBSTITUI O AZUL PADRÃO PELO VERDE-ESCURO INSTITUCIONAL
 ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
 
