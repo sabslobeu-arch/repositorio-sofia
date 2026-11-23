@@ -113,7 +113,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                             palavras_chave = ui.input(label='Palavras-chave').classes('w-1/2').props('outlined dense')
                             
                             # --- NOVO: Substituímos o input de Metodologia pelo select de Tipo ---
-                            opcoes_tipo = ['Todos', 'Artigo', 'TCR', 'Tese', 'Dissertação', 'Capítulo de Livro']
+                            opcoes_tipo = ['Todos', 'Artigo', 'TCR', 'Tese', 'Dissertação']
                             filtro_tipo = ui.select(label='Tipo de Documento', options=opcoes_tipo, value='Todos').classes('w-1/4').props('outlined dense')
                             
                             filtro_ano = ui.input(label='Ano').classes('w-1/4').props('outlined dense')
@@ -127,7 +127,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         
                             enfase_multi = ui.select(
                                 label='Selecione a Ênfase', 
-                                options=['Todas as Ênfases', 'Psicologia', 'Terapia Ocupacional', 'Serviço Social', 'Fonoaudiologia', 'Nutrição', 'Enfermagem', 'Farmácia'], 
+                                options=['Todas as Ênfases', 'Psicologia', 'Terapia Ocupacional', 'Fisioterapia', 'Serviço Social', 'Fonoaudiologia', 'Nutrição', 'Enfermagem', 'Farmácia'], 
                                 value='Todas as Ênfases'
                             ).classes('w-1/3').props('outlined dense')
                             enfase_multi.visible = False
