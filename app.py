@@ -17,12 +17,12 @@ def exportar_resultados():
     # ---> A GUILHOTINA ABSOLUTA (Procura por "pedaços" do nome) <---
     colunas_para_apagar = []
     for col in df.columns:
-    # Transforma tudo em letras minúsculas para facilitar a busca
-    nome_min = str(col).lower()
+        # Transforma tudo em letras minúsculas para facilitar a busca
+        nome_min = str(col).lower()
     
-    # Se o nome da coluna tiver "nome do arquivo" ou "link" em qualquer lugar, vai pra lista de corte
-    if 'nome do arquivo' in nome_min or 'link' in nome_min:
-        colunas_para_apagar.append(col)
+        # Se o nome da coluna tiver "nome do arquivo" ou "link" em qualquer lugar, vai pra lista de corte
+        if 'nome do arquivo' in nome_min or 'link' in nome_min:
+            colunas_para_apagar.append(col)
         
     # Corta as colunas encontradas pela raiz
     df.drop(columns=colunas_para_apagar, inplace=True)
