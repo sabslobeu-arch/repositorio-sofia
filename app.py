@@ -6,7 +6,7 @@ from nicegui import ui
 import urllib.request 
 import json
 
-# --- FUNÇÃO DE EXPORTAÇÃO INTELIGENTE (Sem Links e Arquivos) ---
+# --- FUNÇÃO DE EXPORTAÇÃO INTELIGENTE (Guilhotina Absoluta) ---
 def exportar_resultados():
     import pandas as pd
     import numpy as np
@@ -14,10 +14,18 @@ def exportar_resultados():
     # 1. Carrega os resultados
     df = pd.DataFrame(resultados_encontrados)
     
-    # ---> NOVIDADE: CORTA AS COLUNAS PROIBIDAS PELA RAIZ <---
-    # Coloque aqui o nome EXATO de como essas colunas estão na sua planilha
-    colunas_ocultas = ['NOME DO ARQUIVO', 'LINK PDF', 'NOME ARQUIVO', 'LINK']
-    df.drop(columns=colunas_ocultas, errors='ignore', inplace=True)
+    # ---> A GUILHOTINA ABSOLUTA (Procura por "pedaços" do nome) <---
+    colunas_para_apagar = []
+    for col in df.columns:
+    # Transforma tudo em letras minúsculas para facilitar a busca
+    nome_min = str(col).lower()
+    
+    # Se o nome da coluna tiver "nome do arquivo" ou "link" em qualquer lugar, vai pra lista de corte
+    if 'nome do arquivo' in nome_min or 'link' in nome_min:
+        colunas_para_apagar.append(col)
+        
+    # Corta as colunas encontradas pela raiz
+    df.drop(columns=colunas_para_apagar, inplace=True)
     
     # Substitui espaços em branco vazios por "Nulo"
     df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
@@ -25,7 +33,8 @@ def exportar_resultados():
     # 2. COLUNAS DINÂMICAS: Exclui colunas vazias nesta busca
     df.dropna(axis=1, how='all', inplace=True)
     
-    # 3. COLUNAS UNIVERSAIS (O Link PDF saiu daqui)
+    # 3. COLUNAS UNIVERSAIS
+    # Repare que precisam estar exatamente iguais às colunas da sua planilha original (geralmente em maiúsculas na base)
     colunas_base = ['TITULO', 'AUTORES', 'ANO', 'TIPO DE DOCUMENTO', 'INSTITUICAO', 'PALAVRAS-CHAVE']
     
     # Pega as colunas base e as específicas
@@ -39,14 +48,14 @@ def exportar_resultados():
     if 'TIPO DE DOCUMENTO' in df_limpo.columns and 'ANO' in df_limpo.columns:
         df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
     
-    # 5. Maquiagem dos nomes principais (Link PDF removido)
+    # 5. Maquiagem dos nomes principais
     nomes_bonitos = {
-        'TITULO': 'Título da Obra',
-        'AUTORES': 'Autores (e Orientadores)',
-        'ANO': 'Ano',
-        'TIPO DE DOCUMENTO': 'Tipo de Produção',
-        'INSTITUICAO': 'Instituição',
-        'PALAVRAS-CHAVE': 'Palavras-Chave'
+    'TITULO': 'Título da Obra',
+    'AUTORES': 'Autores (e Orientadores)',
+    'ANO': 'Ano',
+    'TIPO DE DOCUMENTO': 'Tipo de Produção',
+    'INSTITUICAO': 'Instituição',
+    'PALAVRAS-CHAVE': 'Palavras-Chave'
     }
     df_limpo.rename(columns=nomes_bonitos, inplace=True)
     
