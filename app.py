@@ -8,51 +8,51 @@ import json
 
 # --- FUNÇÃO DE EXPORTAÇÃO INTELIGENTE (Multi-Formatos) ---
 def exportar_resultados():
-import pandas as pd
-import numpy as np
-
-# 1. Carrega os resultados
-df = pd.DataFrame(resultados_encontrados)
-
-# Substitui espaços em branco vazios por "Nulo"
-df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
-
-# 2. COLUNAS DINÂMICAS: Exclui colunas vazias nesta busca
-df.dropna(axis=1, how='all', inplace=True)
-
-# 3. COLUNAS UNIVERSAIS (Agora com Palavras-chave)
-# IMPORTANTE: Confirme se na sua planilha original o nome é 'PALAVRAS-CHAVE', 'PALAVRAS-CHAVES' ou 'PALAVRAS CHAVES'. 
-# Use a escrita exata que está no cabeçalho original.
-colunas_base = ['TITULO', 'AUTORES', 'ANO', 'TIPO DE DOCUMENTO', 'INSTITUICAO', 'PALAVRAS-CHAVE']
-
-# Pega as colunas base e as específicas
-base_presentes = [col for col in colunas_base if col in df.columns]
-colunas_especificas = [col for col in df.columns if col not in colunas_base]
-
-# Junta tudo na ordem certa
-df_limpo = df[base_presentes + colunas_especificas].copy()
-
-# 4. ORGANIZAÇÃO: Agrupa no Excel por Tipo de Documento e Ano
-if 'TIPO DE DOCUMENTO' in df_limpo.columns and 'ANO' in df_limpo.columns:
-df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
-
-# 5. Maquiagem dos nomes principais
-nomes_bonitos = {
-'TITULO': 'Título da Obra',
-'AUTORES': 'Autores (e Orientadores)',
-'ANO': 'Ano',
-'TIPO DE DOCUMENTO': 'Tipo de Produção',
-'INSTITUICAO': 'Instituição',
-'PALAVRAS-CHAVE': 'Palavras-Chave',
-}
-df_limpo.rename(columns=nomes_bonitos, inplace=True)
-
-# 6. Limpa os "NaN" e deixa vazio
-df_limpo.fillna('', inplace=True)
-
-# 7. Gera e baixa o arquivo
-csv_texto = df_limpo.to_csv(index=False, sep=';', encoding='utf-8-sig')
-ui.download(csv_texto.encode('utf-8-sig'), 'Exportacao_Repositorio_HSF.csv')
+    import pandas as pd
+    import numpy as np
+    
+    # 1. Carrega os resultados
+    df = pd.DataFrame(resultados_encontrados)
+    
+    # Substitui espaços em branco vazios por "Nulo"
+    df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+    
+    # 2. COLUNAS DINÂMICAS: Exclui colunas vazias nesta busca
+    df.dropna(axis=1, how='all', inplace=True)
+    
+    # 3. COLUNAS UNIVERSAIS (Agora com Palavras-chave)
+    # IMPORTANTE: Confirme se na sua planilha original o nome é 'PALAVRAS-CHAVE', 'PALAVRAS-CHAVES' ou 'PALAVRAS CHAVES'. 
+    # Use a escrita exata que está no cabeçalho original.
+    colunas_base = ['TITULO', 'AUTORES', 'ANO', 'TIPO DE DOCUMENTO', 'INSTITUICAO', 'PALAVRAS-CHAVE']
+    
+    # Pega as colunas base e as específicas
+    base_presentes = [col for col in colunas_base if col in df.columns]
+    colunas_especificas = [col for col in df.columns if col not in colunas_base]
+    
+    # Junta tudo na ordem certa
+    df_limpo = df[base_presentes + colunas_especificas].copy()
+    
+    # 4. ORGANIZAÇÃO: Agrupa no Excel por Tipo de Documento e Ano
+    if 'TIPO DE DOCUMENTO' in df_limpo.columns and 'ANO' in df_limpo.columns:
+    df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
+    
+    # 5. Maquiagem dos nomes principais
+    nomes_bonitos = {
+    'TITULO': 'Título da Obra',
+    'AUTORES': 'Autores (e Orientadores)',
+    'ANO': 'Ano',
+    'TIPO DE DOCUMENTO': 'Tipo de Produção',
+    'INSTITUICAO': 'Instituição',
+    'PALAVRAS-CHAVE': 'Palavras-Chave',
+    }
+    df_limpo.rename(columns=nomes_bonitos, inplace=True)
+    
+    # 6. Limpa os "NaN" e deixa vazio
+    df_limpo.fillna('', inplace=True)
+    
+    # 7. Gera e baixa o arquivo
+    csv_texto = df_limpo.to_csv(index=False, sep=';', encoding='utf-8-sig')
+    ui.download(csv_texto.encode('utf-8-sig'), 'Exportacao_Repositorio_HSF.csv')
 
 # 1. SUBSTITUI O AZUL PADRÃO PELO VERDE-ESCURO INSTITUCIONAL
 ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
