@@ -6,7 +6,7 @@ from nicegui import ui
 import urllib.request 
 import json
 
-# --- FUNÇÃO DE EXPORTAÇÃO INTELIGENTE (Multi-Formatos) ---
+# --- FUNÇÃO DE EXPORTAÇÃO INTELIGENTE (Sem Links e Arquivos) ---
 def exportar_resultados():
     import pandas as pd
     import numpy as np
@@ -14,15 +14,18 @@ def exportar_resultados():
     # 1. Carrega os resultados
     df = pd.DataFrame(resultados_encontrados)
     
+    # ---> NOVIDADE: CORTA AS COLUNAS PROIBIDAS PELA RAIZ <---
+    # Coloque aqui o nome EXATO de como essas colunas estão na sua planilha
+    colunas_ocultas = ['NOME DO ARQUIVO', 'LINK PDF', 'NOME ARQUIVO', 'LINK']
+    df.drop(columns=colunas_ocultas, errors='ignore', inplace=True)
+    
     # Substitui espaços em branco vazios por "Nulo"
     df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
     
     # 2. COLUNAS DINÂMICAS: Exclui colunas vazias nesta busca
     df.dropna(axis=1, how='all', inplace=True)
     
-    # 3. COLUNAS UNIVERSAIS (Agora com Palavras-chave)
-    # IMPORTANTE: Confirme se na sua planilha original o nome é 'PALAVRAS-CHAVE', 'PALAVRAS-CHAVES' ou 'PALAVRAS CHAVES'. 
-    # Use a escrita exata que está no cabeçalho original.
+    # 3. COLUNAS UNIVERSAIS (O Link PDF saiu daqui)
     colunas_base = ['TITULO', 'AUTORES', 'ANO', 'TIPO DE DOCUMENTO', 'INSTITUICAO', 'PALAVRAS-CHAVE']
     
     # Pega as colunas base e as específicas
@@ -36,14 +39,14 @@ def exportar_resultados():
     if 'TIPO DE DOCUMENTO' in df_limpo.columns and 'ANO' in df_limpo.columns:
         df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
     
-    # 5. Maquiagem dos nomes principais
+    # 5. Maquiagem dos nomes principais (Link PDF removido)
     nomes_bonitos = {
-    'TITULO': 'Título da Obra',
-    'AUTORES': 'Autores (e Orientadores)',
-    'ANO': 'Ano',
-    'TIPO DE DOCUMENTO': 'Tipo de Produção',
-    'INSTITUICAO': 'Instituição',
-    'PALAVRAS-CHAVE': 'Palavras-Chave',
+        'TITULO': 'Título da Obra',
+        'AUTORES': 'Autores (e Orientadores)',
+        'ANO': 'Ano',
+        'TIPO DE DOCUMENTO': 'Tipo de Produção',
+        'INSTITUICAO': 'Instituição',
+        'PALAVRAS-CHAVE': 'Palavras-Chave'
     }
     df_limpo.rename(columns=nomes_bonitos, inplace=True)
     
@@ -52,7 +55,7 @@ def exportar_resultados():
     
     # 7. Gera e baixa o arquivo
     csv_texto = df_limpo.to_csv(index=False, sep=';', encoding='utf-8-sig')
-    ui.download(csv_texto.encode('utf-8-sig'), 'Exportacao_Repositorio_HSF.csv')
+    ui.download(csv_texto.encode('utf-8-sig'), 'Relatorio_Pesquisa_SofiaFeldman.csv')
 
 # 1. SUBSTITUI O AZUL PADRÃO PELO VERDE-ESCURO INSTITUCIONAL
 ui.colors(primary='#047857', secondary='#064e3b', accent='#10b981')
