@@ -67,7 +67,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         ui.icon('search', size='1.5rem', color='emerald-600')
                         busca_input = ui.input(placeholder='Pesquisar título, autor, palavras-chave...').classes('flex-grow px-2 text-lg').props('borderless')
 
-                        ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold shadow-none rounded-lg px-4 ml-2')
+                        
                         ui.button('Filtros', icon='tune', on_click=lambda: modal_filtros.open()).classes('text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-full px-4 py-2 shadow-none font-bold mr-2')
                         ui.button('Buscar', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-full px-8 py-2 shadow-sm font-bold')
 
@@ -237,8 +237,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 planilha_real.append(linha_limpa)
                     
                         resultados_encontrados = []
-                    
+
+                        # --- CABEÇALHO DOS RESULTADOS E EXPORTAÇÃO ---
+                        with ui.row().classes('w-full justify-between items-center mt-8 mb-4 border-b border-slate-200 pb-2'):
+                            ui.label('Resultados encontrados').classes('text-lg font-bold text-slate-700')
+                            ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-emerald-100 text-emerald-800 hover:bg-emerald-200 font-bold shadow-none rounded-lg px-4')
                         
+  
                         for doc in planilha_real:
                             d_titulo = str(doc.get('TITULO', '')).lower()
                             d_autores = str(doc.get('AUTORES', '')).lower()
