@@ -237,11 +237,6 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 planilha_real.append(linha_limpa)
                     
                         resultados_encontrados = []
-
-                        # --- CABEÇALHO DOS RESULTADOS E EXPORTAÇÃO ---
-                        with ui.row().classes('w-full justify-between items-center mt-8 mb-4 border-b border-slate-200 pb-2'):
-                            ui.label('Resultados encontrados').classes('text-lg font-bold text-slate-700')
-                            ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-emerald-100 text-emerald-800 hover:bg-emerald-200 font-bold shadow-none rounded-lg px-4')
                         
   
                         for doc in planilha_real:
@@ -306,12 +301,13 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                         with container_resultados:
                             if len(resultados_encontrados) > 0:
-                                ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-sm text-slate-500 mb-2')
                             
+                                with ui.row().classes('w-full justify-between items-center mb-4 border-b border-slate-200 pb-2'):
+                                    ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-lg font-bold text-slate-700')
+                                    ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-bold shadow-none rounded-lg px-4 py-1')
                                 for doc in resultados_encontrados:
                                     with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
-                                        with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:
-                                        
+                                        with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:   
                                             with ui.column().classes('flex-grow gap-1'):
                                                 with ui.row().classes('gap-2 items-center'):
                                                     ui.label(str(doc.get('TIPO DE DOCUMENTO', ''))).classes('bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide')
