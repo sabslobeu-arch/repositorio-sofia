@@ -34,7 +34,7 @@ def exportar_resultados():
     
     # 4. ORGANIZAÇÃO: Agrupa no Excel por Tipo de Documento e Ano
     if 'TIPO DE DOCUMENTO' in df_limpo.columns and 'ANO' in df_limpo.columns:
-    df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
+        df_limpo.sort_values(by=['TIPO DE DOCUMENTO', 'ANO'], ascending=[True, False], inplace=True)
     
     # 5. Maquiagem dos nomes principais
     nomes_bonitos = {
