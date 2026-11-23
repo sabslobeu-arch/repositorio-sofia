@@ -301,10 +301,20 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                     
                         with container_resultados:
                             if len(resultados_encontrados) > 0:
-                            
+                                
+                                # --- FUNÇÃO DE EXPORTAÇÃO ---
+                                def exportar_resultados():
+                                    import pandas as pd
+                                    df_export = pd.DataFrame(resultados_encontrados)
+                                    csv_texto = df_export.to_csv(index=False, sep=';', encoding='utf-8-sig')
+                                    ui.download(csv_texto.encode('utf-8-sig'), 'Resultados_Repositorio_SofiaFeldman.csv')
+                                
+                                # --- BARRA DE RESULTADOS ---
                                 with ui.row().classes('w-full justify-between items-center mb-4 border-b border-slate-200 pb-2'):
                                     ui.label(f'{len(resultados_encontrados)} documento(s) encontrado(s)').classes('text-lg font-bold text-slate-700')
                                     ui.button('Exportar CSV', icon='file_download', on_click=exportar_resultados).classes('bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-bold shadow-none rounded-lg px-4 py-1')
+                                
+                                # --- LAÇO DOS CARTÕES ---
                                 for doc in resultados_encontrados:
                                     with ui.card().classes('w-full p-0 bg-white rounded-xl shadow-sm border border-emerald-100 hover:shadow-md transition-all duration-300 overflow-hidden'):
                                         with ui.row().classes('w-full p-5 cursor-pointer hover:bg-emerald-50/30 transition-colors justify-between items-center no-wrap gap-4') as cabecalho:   
