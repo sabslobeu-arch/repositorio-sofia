@@ -129,32 +129,32 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         with ui.row().classes('w-full items-center justify-between mb-4 shrink-0'):
                             ui.label('Termos de Uso, Privacidade e LGPD').classes('text-2xl font-bold text-slate-800')
                             ui.icon('gavel', size='2rem', color='emerald-700')
-        
+
                         with ui.column().classes('w-full gap-3 text-slate-600 text-sm text-justify overflow-y-auto pr-2'):
                             ui.label(
-                                    'O Repositório Científico Sofia Feldman (RCSF) possui finalidade exclusivamente acadêmica, '
-                                    'científica e histórica, visando à preservação e à disseminação em Acesso Aberto da produção '
-                                    'intelectual vinculada ao Hospital Sofia Feldman.'
+                                'O Repositório Científico Sofia Feldman (RCSF) possui finalidade exclusivamente acadêmica, '
+                                'científica e histórica, visando à preservação e à disseminação em Acesso Aberto da produção '
+                                'intelectual vinculada ao Hospital Sofia Feldman.'
                             )
-        
+
                             ui.label('Licença de Uso (Acesso Aberto):').classes('font-bold text-slate-800 mt-2')
                             ui.label(
-                                    'Salvo indicação expressa em contrário, as obras disponibilizadas no RCSF são regidas pela licença '
-                                    'Creative Commons Atribuição – Não Comercial – Sem Derivações 4.0 Internacional (CC BY-NC-ND 4.0). '
-                                    'É permitida a leitura, o download e a citação com crédito obrigatório aos autores, sendo vedados o '
-                                    'uso comercial e a modificação ou criação de obras derivadas.'
+                                'Salvo indicação expressa em contrário, as obras disponibilizadas no RCSF são regidas pela licença '
+                                'Creative Commons Atribuição – Não Comercial – Sem Derivações 4.0 Internacional (CC BY-NC-ND 4.0). '
+                                'É permitida a leitura, o download e a citação com crédito obrigatório aos autores, sendo vedados o '
+                                'uso comercial e a modificação ou criação de obras derivadas.'
                             )
-        
+
                             ui.label('Responsabilidade Intelectual, Autoral e Uso de IA:').classes('font-bold text-slate-800 mt-2')
                             ui.label(
-                                    'O conteúdo, a veracidade dos dados, a originalidade e todo e qualquer uso de ferramentas de '
-                                    'Inteligência Artificial (IA) na elaboração das obras depositadas são de responsabilidade integral '
-                                    'e exclusiva de seus respectivos depositantes. O Hospital Sofia Feldman atua apenas como depositário '
-                                    'e divulgador, não se responsabilizando por infrações de direitos autorais, plágio, uso antiético de IA '
-                                    'ou violação de dados de terceiros. As pesquisas envolvendo seres humanos devem possuir aprovação '
-                                    'prévia de Comitê de Ética em Pesquisa (CEP), quando aplicável.'
+                                'O conteúdo, a veracidade dos dados, a originalidade e todo e qualquer uso de ferramentas de '
+                                'Inteligência Artificial (IA) na elaboração das obras depositadas são de responsabilidade integral '
+                                'e exclusiva de seus respectivos depositantes. O Hospital Sofia Feldman atua apenas como depositário '
+                                'e divulgador, não se responsabilizando por infrações de direitos autorais, plágio, uso antiético de IA '
+                                'ou violação de dados de terceiros. As pesquisas envolvendo seres humanos devem possuir aprovação '
+                                'prévia de Comitê de Ética em Pesquisa (CEP), quando aplicável.'
                             )
-        
+
                             ui.label('Base Legal e Metadados (LGPD):').classes('font-bold text-slate-800 mt-2')
                             ui.label(
                                 'O tratamento de dados pessoais estritamente acadêmicos (como nomes de autores, orientadores e '
@@ -162,7 +162,7 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 'no Art. 4º, inciso II, alínea "b", e no Art. 7º, inciso IV, da Lei Geral de Proteção de Dados '
                                 '(Lei nº 13.709/2018), que resguardam o tratamento para fins exclusivos acadêmicos e de pesquisa.'
                             )
-                
+
                             ui.label('Direitos do Titular e Solicitação de Retirada:').classes('font-bold text-slate-800 mt-2')
                             ui.label(
                                 'Autores podem solicitar correção de metadados ou revogação voluntária do depósito (efetivada em até '
@@ -171,48 +171,45 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                 'exposição de dados pessoais sensíveis. As solicitações devem ser encaminhadas à Biblioteca ou à Linha '
                                 'de Ensino e Pesquisa (LEP) do Hospital Sofia Feldman.'
                             )
-        
+
                         with ui.row().classes('w-full justify-end mt-6 pt-4 border-t border-slate-100 shrink-0'):
                             ui.button('Entendi e Fechar', on_click=modal_lgpd.close).classes(
                                 'bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg px-6 shadow-sm'
                             )
-        
-        
+
                 # 2. BANNER DISCRETO NO RODAPÉ (aparece apenas no primeiro acesso)
                 banner_aviso = ui.card().classes(
                     'fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl '
                     'bg-slate-900/95 text-slate-100 p-4 rounded-xl shadow-2xl border border-slate-700 hidden'
                 )
-        
+
+                def aceitar_aviso():
+                    ui.run_javascript("localStorage.setItem('rcsf_aviso_ciente', 'true')")
+                    banner_aviso.classes(add='hidden')
+
+                async def verificar_banner():
+                    ciente = await ui.run_javascript("localStorage.getItem('rcsf_aviso_ciente')")
+                    if ciente != 'true':
+                        banner_aviso.classes(remove='hidden')
+
                 with banner_aviso:
                     with ui.row().classes('w-full items-center justify-between gap-4 no-wrap'):
                         with ui.row().classes('items-center gap-3'):
                             ui.icon('info', size='1.5rem', color='emerald-400')
                             ui.label(
-                                        'O RCSF disponibiliza produções em Acesso Aberto (CC BY-NC-ND 4.0). '
-                                        'Ao navegar, você declara ciência dos nossos Termos de Uso e Aviso de Privacidade.'
-                                    ).classes('text-xs sm:text-sm text-slate-200')
-        
+                                'O RCSF disponibiliza produções em Acesso Aberto (CC BY-NC-ND 4.0). '
+                                'Ao navegar, você declara ciência dos nossos Termos de Uso e Aviso de Privacidade.'
+                            ).classes('text-xs sm:text-sm text-slate-200')
+
                         with ui.row().classes('items-center gap-2 shrink-0'):
                             ui.button('Ler Termos', on_click=modal_lgpd.open).props('flat dense').classes(
                                 'text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm font-semibold'
-                                    )
-        
-                                    def aceitar_aviso():
-                                        ui.run_javascript("localStorage.setItem('rcsf_aviso_ciente', 'true')")
-                                        banner_aviso.classes(add='hidden')
-        
-                                    ui.button('Ciente', on_click=aceitar_aviso).classes(
-                                        'bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold rounded-lg px-4'
-                                    )
-        
-        
-                    async def verificar_banner():
-                        ciente = await ui.run_javascript("localStorage.getItem('rcsf_aviso_ciente')")
-                        if ciente != 'true':
-                            banner_aviso.classes(remove='hidden')
-        
-                    ui.timer(0.1, verificar_banner, once=True)
+                            )
+                            ui.button('Ciente', on_click=aceitar_aviso).classes(
+                                'bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold rounded-lg px-4'
+                            )
+
+                ui.timer(0.1, verificar_banner, once=True)
                 
                 # 2. POP-UP DE BUSCA AVANÇADA
                 modal_filtros = ui.dialog()
