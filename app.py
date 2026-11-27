@@ -123,56 +123,57 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                         ui.button('Buscar', on_click=lambda: executar_busca(False)).classes('bg-emerald-700 hover:bg-emerald-800 text-white rounded-full px-8 py-2 shadow-sm font-bold')
 
                 # --- JANELA DA LGPD ---
-                # 1. MODAL ATUALIZADO (Termos de Uso, Privacidade e LGPD)
+               # 1. MODAL ATUALIZADO (Termos de Uso, Privacidade e LGPD)
                 with ui.dialog() as modal_lgpd:
-                    with ui.card().classes('w-full max-w-3xl max-h-[85vh] p-8 bg-white rounded-xl flex flex-col'):
-                        with ui.row().classes('w-full items-center justify-between mb-4 shrink-0'):
-                            ui.label('Termos de Uso, Privacidade e LGPD').classes('text-2xl font-bold text-slate-800')
+                    with ui.card().classes('w-full max-w-3xl p-6 sm:p-8 bg-white rounded-xl no-wrap').style('max-width: 800px; width: 95vw;'):
+                        with ui.row().classes('w-full items-center justify-between mb-4 no-wrap'):
+                            ui.label('Termos de Uso, Privacidade e LGPD').classes('text-xl sm:text-2xl font-bold text-slate-800')
                             ui.icon('gavel', size='2rem', color='emerald-700')
 
-                        with ui.column().classes('w-full gap-3 text-slate-600 text-sm text-justify overflow-y-auto pr-2'):
-                            ui.label(
-                                'O Repositório Científico Sofia Feldman (RCSF) possui finalidade exclusivamente acadêmica, '
-                                'científica e histórica, visando à preservação e à disseminação em Acesso Aberto da produção '
-                                'intelectual vinculada ao Hospital Sofia Feldman.'
-                            )
+                        with ui.scroll_area().classes('w-full h-[55vh] pr-4'):
+                            with ui.column().classes('w-full gap-3 text-slate-600 text-sm text-justify'):
+                                ui.label(
+                                    'O Repositório Científico Sofia Feldman (RCSF) possui finalidade exclusivamente acadêmica, '
+                                    'científica e histórica, visando à preservação e à disseminação em Acesso Aberto da produção '
+                                    'intelectual vinculada ao Hospital Sofia Feldman.'
+                                )
 
-                            ui.label('Licença de Uso (Acesso Aberto):').classes('font-bold text-slate-800 mt-2')
-                            ui.label(
-                                'Salvo indicação expressa em contrário, as obras disponibilizadas no RCSF são regidas pela licença '
-                                'Creative Commons Atribuição – Não Comercial – Sem Derivações 4.0 Internacional (CC BY-NC-ND 4.0). '
-                                'É permitida a leitura, o download e a citação com crédito obrigatório aos autores, sendo vedados o '
-                                'uso comercial e a modificação ou criação de obras derivadas.'
-                            )
+                                ui.label('Licença de Uso (Acesso Aberto):').classes('font-bold text-slate-800 mt-2')
+                                ui.label(
+                                    'Salvo indicação expressa em contrário, as obras disponibilizadas no RCSF são regidas pela licença '
+                                    'Creative Commons Atribuição – Não Comercial – Sem Derivações 4.0 Internacional (CC BY-NC-ND 4.0). '
+                                    'É permitida a leitura, o download e a citação com crédito obrigatório aos autores, sendo vedados o '
+                                    'uso comercial e a modificação ou criação de obras derivadas.'
+                                )
 
-                            ui.label('Responsabilidade Intelectual, Autoral e Uso de IA:').classes('font-bold text-slate-800 mt-2')
-                            ui.label(
-                                'O conteúdo, a veracidade dos dados, a originalidade e todo e qualquer uso de ferramentas de '
-                                'Inteligência Artificial (IA) na elaboração das obras depositadas são de responsabilidade integral '
-                                'e exclusiva de seus respectivos depositantes. O Hospital Sofia Feldman atua apenas como depositário '
-                                'e divulgador, não se responsabilizando por infrações de direitos autorais, plágio, uso antiético de IA '
-                                'ou violação de dados de terceiros. As pesquisas envolvendo seres humanos devem possuir aprovação '
-                                'prévia de Comitê de Ética em Pesquisa (CEP), quando aplicável.'
-                            )
+                                ui.label('Responsabilidade Intelectual, Autoral e Uso de IA:').classes('font-bold text-slate-800 mt-2')
+                                ui.label(
+                                    'O conteúdo, a veracidade dos dados, a originalidade e todo e qualquer uso de ferramentas de '
+                                    'Inteligência Artificial (IA) na elaboração das obras depositadas são de responsabilidade integral '
+                                    'e exclusiva de seus respectivos depositantes. O Hospital Sofia Feldman atua apenas como depositário '
+                                    'e divulgador, não se responsabilizando por infrações de direitos autorais, plágio, uso antiético de IA '
+                                    'ou violação de dados de terceiros. As pesquisas envolvendo seres humanos devem possuir aprovação '
+                                    'prévia de Comitê de Ética em Pesquisa (CEP), quando aplicável.'
+                                )
 
-                            ui.label('Base Legal e Metadados (LGPD):').classes('font-bold text-slate-800 mt-2')
-                            ui.label(
-                                'O tratamento de dados pessoais estritamente acadêmicos (como nomes de autores, orientadores e '
-                                'vínculo institucional, inclusive para fins de busca e exportação bibliográfica) é realizado com base '
-                                'no Art. 4º, inciso II, alínea "b", e no Art. 7º, inciso IV, da Lei Geral de Proteção de Dados '
-                                '(Lei nº 13.709/2018), que resguardam o tratamento para fins exclusivos acadêmicos e de pesquisa.'
-                            )
+                                ui.label('Base Legal e Metadados (LGPD):').classes('font-bold text-slate-800 mt-2')
+                                ui.label(
+                                    'O tratamento de dados pessoais estritamente acadêmicos (como nomes de autores, orientadores e '
+                                    'vínculo institucional, inclusive para fins de busca e exportação bibliográfica) é realizado com base '
+                                    'no Art. 4º, inciso II, alínea "b", e no Art. 7º, inciso IV, da Lei Geral de Proteção de Dados '
+                                    '(Lei nº 13.709/2018), que resguardam o tratamento para fins exclusivos acadêmicos e de pesquisa.'
+                                )
 
-                            ui.label('Direitos do Titular e Solicitação de Retirada:').classes('font-bold text-slate-800 mt-2')
-                            ui.label(
-                                'Autores podem solicitar correção de metadados ou revogação voluntária do depósito (efetivada em até '
-                                '30 dias). Terceiros interessados podem solicitar a retirada de obra mediante comprovação documental da '
-                                'irregularidade alegada, assegurada a suspensão imediata e preventiva em casos de risco a pacientes ou '
-                                'exposição de dados pessoais sensíveis. As solicitações devem ser encaminhadas à Biblioteca ou à Linha '
-                                'de Ensino e Pesquisa (LEP) do Hospital Sofia Feldman.'
-                            )
+                                ui.label('Direitos do Titular e Solicitação de Retirada:').classes('font-bold text-slate-800 mt-2')
+                                ui.label(
+                                    'Autores podem solicitar correção de metadados ou revogação voluntária do depósito (efetivada em até '
+                                    '30 dias). Terceiros interessados podem solicitar a retirada de obra mediante comprovação documental da '
+                                    'irregularidade alegada, assegurada a suspensão imediata e preventiva em casos de risco a pacientes ou '
+                                    'exposição de dados pessoais sensíveis. As solicitações devem ser encaminhadas à Biblioteca ou à Linha '
+                                    'de Ensino e Pesquisa (LEP) do Hospital Sofia Feldman.'
+                                )
 
-                        with ui.row().classes('w-full justify-end mt-6 pt-4 border-t border-slate-100 shrink-0'):
+                        with ui.row().classes('w-full justify-end mt-4 pt-4 border-t border-slate-100'):
                             ui.button('Entendi e Fechar', on_click=modal_lgpd.close).classes(
                                 'bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg px-6 shadow-sm'
                             )
