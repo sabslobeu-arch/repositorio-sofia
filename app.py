@@ -207,12 +207,12 @@ with ui.column().classes('w-full max-w-5xl mx-auto p-4 gap-6'):
                                     )
         
         
-                        async def verificar_banner():
-                            ciente = await ui.run_javascript("localStorage.getItem('rcsf_aviso_ciente')")
-                            if ciente != 'true':
-                                banner_aviso.classes(remove='hidden')
+                    async def verificar_banner():
+                        ciente = await ui.run_javascript("localStorage.getItem('rcsf_aviso_ciente')")
+                        if ciente != 'true':
+                            banner_aviso.classes(remove='hidden')
         
-                        ui.timer(0.1, verificar_banner, once=True)
+                    ui.timer(0.1, verificar_banner, once=True)
                 
                 # 2. POP-UP DE BUSCA AVANÇADA
                 modal_filtros = ui.dialog()
